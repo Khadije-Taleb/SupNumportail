@@ -9,13 +9,13 @@ class Admin extends Model
 {
     protected $table = 'admin';
 
-    protected $primaryKey = 'id_admin';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
         'nom',
         'prenom',
-        'id_utilisateur',
+        'utilisateur_id',
     ];
 
     public function user()

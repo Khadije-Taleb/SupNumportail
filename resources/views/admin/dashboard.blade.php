@@ -1,162 +1,541 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="bg-gradient-to-r from-blue-600 to-green-400 py-6 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 shadow-md">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h2 class="font-semibold text-2xl text-white leading-tight">
-                        {{ __('Tableau de Bord Admin') }}
-                    </h2>
-                    <p class="text-blue-100 text-sm mt-1">Gestion des demandes et du portail</p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupNumPortail - Tableau de Bord Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #1e293b;
+        }
+
+        /* Header */
+        .header {
+            background-color: white;
+            border-bottom: 3px solid #3b82f6;
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #3b82f6;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #64748b;
+            font-size: 0.9375rem;
+            transition: color 0.2s;
+            padding: 0.25rem 0;
+        }
+
+        .nav a:hover {
+            color: #1e293b;
+        }
+
+        .nav a.active {
+            color: #3b82f6;
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 0.9375rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .header-btn:hover {
+            color: #1e293b;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .page-title h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-description {
+            color: #64748b;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+
+        .import-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.5rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+
+        .import-btn:hover {
+            background-color: #2563eb;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border-left: 4px solid;
+        }
+
+        .stat-card.attente {
+            border-left-color: #3b82f6;
+        }
+
+        .stat-card.encours {
+            border-left-color: #06b6d4;
+        }
+
+        .stat-card.traitees {
+            border-left-color: #10b981;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-card.attente .stat-icon {
+            background-color: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .stat-card.encours .stat-icon {
+            background-color: #cffafe;
+            color: #06b6d4;
+        }
+
+        .stat-card.traitees .stat-icon {
+            background-color: #d1fae5;
+            color: #10b981;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        /* Demandes Section */
+        .demandes-section {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .view-all {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .view-all:hover {
+            color: #2563eb;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+        }
+
+        th {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        td {
+            padding: 1rem;
+        }
+
+        .student-name {
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .student-id {
+            font-size: 0.8125rem;
+            color: #94a3b8;
+        }
+
+        .demande-type {
+            color: #64748b;
+            font-size: 0.9375rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+        }
+
+        .status-attente, .status-en_attente, .status-EN_ATTENTE {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .status-encours, .status-en_cours_traitement {
+            background-color: #cffafe;
+            color: #0891b2;
+        }
+
+        .status-traitee, .status-fin, .status-VALIDE {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+
+        .status-rejetee, .status-REFUSE {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .date-cell {
+            color: #64748b;
+            font-size: 0.9375rem;
+        }
+
+        .action-btn {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: #2563eb;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <a href="{{ route('admin.dashboard') }}" class="logo">
+                <div class="logo-icon">SN</div>
+                <span>SupNumPortail</span>
+            </a>
+            <nav class="nav">
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
+                <a href="{{ route('admin.etudiants.import') }}" class="{{ request()->routeIs('admin.etudiants.import') ? 'active' : '' }}">Importer Etudiants</a>
+                <a href="{{ route('admin.certificats.index') }}" class="{{ request()->routeIs('admin.certificats.*') ? 'active' : '' }}">Certificats Médicaux</a>
+                <a href="{{ route('admin.demandes.index') }}" class="{{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}">Gestion des Demandes</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="header-btn">
+                <span>👤</span>
+                <span>{{ Auth::user()->nom ?? 'Admin' }}</span>
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="header-btn">
+                    <span>🚪</span>
+                    <span>Déconnexion</span>
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-top">
+                <div class="page-title">
+                    <h1>Gestion des demandes et du portail</h1>
+                    <p class="page-description">
+                        Supervisez les inscriptions, validez les certificats et gérez les flux académiques. Accédez<br>
+                        aux outils de gestion centralisée des étudiants.
+                    </p>
                 </div>
-                <a href="{{ route('admin.import') }}" class="inline-flex items-center px-4 py-2 bg-white text-blue-600 border border-transparent rounded-lg font-semibold text-xs uppercase tracking-widest hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    {{ __('Importer Étudiants') }}
+                <a href="{{ route('admin.etudiants.import') }}" class="import-btn">
+                    <span>📤</span>
+                    <span>Importer des étudiants</span>
                 </a>
             </div>
         </div>
-    </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-xl transition-transform hover:-translate-y-1 duration-300">
-                    <div class="p-6 flex items-center justify-between">
-                        <div>
-                            <div class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">Total Demandes</div>
-                            <div class="text-4xl font-extrabold text-gray-900 dark:text-gray-100">{{ $stats['total'] }}</div>
-                        </div>
-                        <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-2xl shadow-blue-200 shadow-lg">
-                            📂
-                        </div>
-                    </div>
-                    <div class="bg-blue-50 dark:bg-gray-700/50 px-6 py-3 border-t border-blue-100 dark:border-gray-700">
-                        <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">Toutes les demandes reçues</span>
-                    </div>
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card attente">
+                <div class="stat-header">
+                    <span class="stat-label">En attente</span>
+                    <div class="stat-icon">📋</div>
                 </div>
+                <div class="stat-value">{{ $stats['pending'] }}</div>
+                <div class="stat-change positive">Action requise</div>
+            </div>
 
-                <!-- Card 2 -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-xl transition-transform hover:-translate-y-1 duration-300">
-                     <div class="p-6 flex items-center justify-between">
-                        <div>
-                            <div class="text-xs font-bold text-yellow-500 uppercase tracking-widest mb-1">En attente</div>
-                            <div class="text-4xl font-extrabold text-gray-900 dark:text-gray-100">{{ $stats['pending'] }}</div>
-                        </div>
-                        <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-white text-2xl shadow-yellow-200 shadow-lg">
-                            ⏳
-                        </div>
-                    </div>
-                    <div class="bg-yellow-50 dark:bg-gray-700/50 px-6 py-3 border-t border-yellow-100 dark:border-gray-700">
-                         <span class="text-xs text-yellow-600 dark:text-yellow-400 font-medium">Demandes nécessitant une action</span>
-                    </div>
+            <div class="stat-card encours">
+                <div class="stat-header">
+                    <span class="stat-label">En cours</span>
+                    <div class="stat-icon">💬</div>
                 </div>
+                <div class="stat-value">{{ $stats['in_progress'] }}</div>
+                <div class="stat-change">Dossiers ouverts</div>
+            </div>
 
-                <!-- Card 3 -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-xl transition-transform hover:-translate-y-1 duration-300">
-                     <div class="p-6 flex items-center justify-between">
-                        <div>
-                            <div class="text-xs font-bold text-red-500 uppercase tracking-widest mb-1">Certificats en attente</div>
-                            <div class="text-4xl font-extrabold text-gray-900 dark:text-gray-100">{{ $stats['pending_certificats'] ?? 0 }}</div>
-                        </div>
-                        <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-2xl shadow-red-200 shadow-lg">
-                            🏥
-                        </div>
-                    </div>
-                    <div class="bg-red-50 dark:bg-gray-700/50 px-6 py-3 border-t border-red-100 dark:border-gray-700 flex justify-between items-center">
-                         <span class="text-xs text-red-600 dark:text-red-400 font-medium">Justificatifs à valider</span>
-                         <a href="{{ route('admin.certificats.index', ['statut' => 'EN_ATTENTE']) }}" class="text-xs text-red-700 font-bold hover:underline">Voir tout →</a>
-                    </div>
+            <div class="stat-card traitees">
+                <div class="stat-header">
+                    <span class="stat-label">Traitées ce mois</span>
+                    <div class="stat-icon">✅</div>
+                </div>
+                <div class="stat-value">{{ $stats['completed_month'] }}</div>
+                <div class="stat-change positive">Mois de {{ now()->translatedFormat('F') }}</div>
+            </div>
+        </div>
+
+        <!-- Demandes Section -->
+        <div class="demandes-section">
+            <div class="section-header">
+                <h2 class="section-title">Activités récentes</h2>
+                <div class="flex gap-4">
+                    <a href="{{ route('admin.demandes.index') }}" class="view-all">Voir documents</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="{{ route('admin.certificats.index') }}" class="view-all">Voir certificats</a>
                 </div>
             </div>
 
-            <!-- Recent Requests Table -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-xl mb-10">
-                <div class="p-6 border-b border-gray-100 dark:border-gray-700 md:flex md:justify-between md:items-center space-y-4 md:space-y-0">
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                        <span class="text-blue-500">📋</span> Toutes les demandes
-                    </h3>
-                    
-                    <form action="{{ route('admin.dashboard') }}" method="GET" class="flex items-center gap-3">
-                        <select name="statut" onchange="this.form.submit()" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            <option value="">Tous les statuts</option>
-                            <option value="en_attente" {{ request('statut') === 'en_attente' ? 'selected' : '' }}>En attente</option>
-                            <option value="acceptee" {{ request('statut') === 'acceptee' ? 'selected' : '' }}>Acceptées</option>
-                            <option value="rejetee" {{ request('statut') === 'rejetee' ? 'selected' : '' }}>Rejetées</option>
-                        </select>
-                        @if(request('statut'))
-                            <a href="{{ route('admin.dashboard') }}" class="text-xs text-gray-500 hover:text-blue-600 transition-colors">Effacer</a>
-                        @endif
-                    </form>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-700/50">
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">ÉTUDIANT</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">DOCUMENT</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">DATE</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">STATUT</th>
-                                <th class="px-6 py-4 text-right text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">ACTIONS</th>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ÉTUDIANT</th>
+                            <th>TYPE DE DEMANDE</th>
+                            <th>STATUT</th>
+                            <th>DATE</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($demandes as $demande)
+                            <tr>
+                                <td>
+                                    <div class="student-name">{{ $demande->etudiant?->prenom ?? '' }} {{ $demande->etudiant?->nom ?? 'Étudiant Inconnu' }}</div>
+                                    <div class="student-id">{{ $demande->etudiant?->matricule ?? $demande->matricule_etudiant }}</div>
+                                </td>
+                                <td>
+                                    <div class="demande-type">
+                                        @if($is_certificat)
+                                            Certificat Médical ({{ $demande->matiere }})
+                                        @else
+                                            {{ $demande->document->nom_document ?? 'Autre' }}
+                                        @endif
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-{{ $demande->statut }}">
+                                        {{ strtoupper(str_replace('_', ' ', $demande->statut)) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="date-cell">{{ $demande->created_at ? $demande->created_at->format('d M Y') : '-' }}</div>
+                                </td>
+                                <td>
+                                    <a href="{{ $is_certificat ? route('admin.certificats.show', $demande->id) : route('admin.demandes.show', $demande) }}" class="action-btn">
+                                        <span>Gérer</span>
+                                        <span>👁</span>
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            @forelse($demandes as $demande)
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="h-10 w-10 flex-shrink-0 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                                                {{ substr($demande->etudiant?->prenom ?? 'U', 0, 1) }}{{ substr($demande->etudiant?->nom ?? 'N', 0, 1) }}
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $demande->etudiant?->prenom ?? '' }} {{ $demande->etudiant?->nom ?? 'Étudiant Inconnu' }}</div>
-                                                <div class="text-xs text-gray-500">{{ $demande->etudiant?->matricule ?? $demande->matricule }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $demande->document->type_document ?? 'Autre' }}</div>
-                                        <div class="text-xs text-gray-500">{{ Str::limit($demande->document->description ?? '', 30) }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900 dark:text-gray-100 font-medium">{{ $demande->date_demande->format('d/m/Y') }}</div>
-                                        <div class="text-xs text-gray-500">{{ $demande->date_demande->format('H:i') }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        @php
-                                            $statusClasses = [
-                                                'ACCEPTEE' => 'bg-green-100 text-green-800 border-green-200',
-                                                'REJETEE' => 'bg-red-100 text-red-800 border-red-200',
-                                                'EN_ATTENTE' => 'bg-amber-100 text-amber-800 border-amber-200',
-                                            ];
-                                            $class = $statusClasses[strtoupper($demande->statut)] ?? 'bg-gray-100 text-gray-800 border-gray-200';
-                                        @endphp
-                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border {{ $class }}">
-                                            {{ strtoupper(str_replace('_', ' ', $demande->statut)) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('admin.demandes.show', $demande) }}" class="inline-flex items-center px-4 py-2 border border-blue-600 rounded-lg text-blue-600 hover:bg-blue-600 hover:text-white transition-all text-xs font-bold uppercase tracking-wider shadow-sm">
-                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                            Consulter
-                                        </a>
-                                    </td>
-                                </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Aucune demande trouvée.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">Aucune demande récente.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-
         </div>
     </div>
-</x-app-layout>
+
+    <!-- Footer -->
+    <div class="footer">
+        © {{ date('Y') }} SupNumPortail Admin. Système de gestion académique
+    </div>
+</body>
+</html>

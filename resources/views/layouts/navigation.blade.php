@@ -41,11 +41,17 @@
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('admin.import')" :active="request()->routeIs('admin.import')">
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.etudiants.import')" :active="request()->routeIs('admin.etudiants.import')">
                             {{ __('Importer Étudiants') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.certificats.index')" :active="request()->routeIs('admin.certificats.*')">
                             {{ __('Certificats Médicaux') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.demandes.index')" :active="request()->routeIs('admin.demandes.*')">
+                            {{ __('Gestion Demandes') }}
                         </x-nav-link>
                          <!-- Add more admin links here if needed -->
                     @endif
@@ -123,6 +129,9 @@
             @elseif(Auth::user()->role === 'admin')
                 <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                     {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.demandes.index')" :active="request()->routeIs('admin.demandes.*')">
+                    {{ __('Gestion Demandes') }}
                 </x-responsive-nav-link>
             @endif
         </div>

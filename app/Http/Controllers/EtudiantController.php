@@ -22,15 +22,16 @@ class EtudiantController extends Controller
             'rejetees' => $etudiant ? $etudiant->demandes()->where('statut', 'rejetee')->count() : 0,
         ];
 
-        $notifications = $user->getAllNotifications()->latest('date_notification')->take(5)->get();
+        $notifications = $user->getAllNotifications()->latest('created_at')->take(5)->get();
+        $unreadCount = $user->notifications()->where('lu', false)->count();
 
-        return view('etudiant.dashboard', compact('user', 'etudiant', 'stats', 'notifications'));
+        return view('etudiant.dashboard', compact('user', 'etudiant', 'stats', 'notifications', 'unreadCount'));
     }
 
     public function notifications()
     {
         $user = Auth::user();
-        $notifications = $user->getAllNotifications()->latest('date_notification')->paginate(10);
+        $notifications = $user->getAllNotifications()->latest('created_at')->paginate(10);
         return view('etudiant.notifications', compact('notifications'));
     }
 

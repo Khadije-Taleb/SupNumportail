@@ -35,9 +35,8 @@ class UsersImport implements ToCollection, WithHeadingRow
                 // Create User
                 $user = User::create([
                     'email' => $row['email'],
-                    'mot_de_passe' => Hash::make($row['password']),
+                    'password' => Hash::make($row['password']),
                     'role' => 'etudiant',
-                    'actif' => true,
                     'premiere_connexion' => true,
                 ]);
 
@@ -48,7 +47,8 @@ class UsersImport implements ToCollection, WithHeadingRow
                     'prenom' => $row['prenom'],
                     'annee' => $row['annee'],
                     'filiere' => $row['filiere'],
-                    'id_utilisateur' => $user->id_utilisateur,
+                    'email' => $row['email'],
+                    'utilisateur_id' => $user->id,
                 ]);
             });
         }

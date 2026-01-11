@@ -19,6 +19,7 @@ class ForcePasswordChange
 
         if ($user && $user->premiere_connexion && 
             $request->path() !== '/' &&
+            $user->role !== 'admin' &&
             !$request->routeIs('password.change') && 
             !$request->routeIs('password.update') && 
             !$request->routeIs('password.update_initial') && 

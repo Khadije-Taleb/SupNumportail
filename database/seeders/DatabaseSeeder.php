@@ -19,23 +19,21 @@ class DatabaseSeeder extends Seeder
         // Create Admin User
         $adminUser = User::create([
             'email' => 'admin@supnum.ne',
-            'mot_de_passe' => Hash::make('password123'),
+            'password' => Hash::make('password123'),
             'role' => 'admin',
-            'actif' => true,
         ]);
 
         Admin::create([
             'nom' => 'Admin',
             'prenom' => 'Principal',
-            'id_utilisateur' => $adminUser->id_utilisateur,
+            'utilisateur_id' => $adminUser->id,
         ]);
 
         // Create Student User
         $etudiantUser = User::create([
             'email' => 'etudiant@supnum.ne',
-            'mot_de_passe' => Hash::make('password123'),
+            'password' => Hash::make('password123'),
             'role' => 'etudiant',
-            'actif' => true,
         ]);
 
         Etudiant::create([
@@ -43,8 +41,14 @@ class DatabaseSeeder extends Seeder
             'nom' => 'Bah',
             'prenom' => 'Mamadou',
             'filiere' => 'Genie Logiciel',
-            'niveau' => 'L3',
-            'id_utilisateur' => $etudiantUser->id_utilisateur,
+            'annee' => 'L3',
+            'email' => 'etudiant@supnum.ne',
+            'utilisateur_id' => $etudiantUser->id,
+        ]);
+
+        $this->call([
+            DocumentSeeder::class,
+            \Database\Seeders\EvaluationSeeder::class,
         ]);
     }
 }

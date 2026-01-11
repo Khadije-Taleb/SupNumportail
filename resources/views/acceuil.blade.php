@@ -3,525 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <title>Accueil - SupNumPortail | Institut Supérieur du Numérique</title>
+    <title>Bienvenue sur SupNumPortail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
         }
-
-        /* Header Styles */
-        header {
-            background-color: #ffffff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+        .gradient-bg {
+            background: linear-gradient(135deg, #F0F4FF 0%, #E0E7FF 100%);
         }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-image {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #0D6EFD 0%, #3dd598 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .logo-text h1 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #333;
-        }
-
-        .sup-text {
-            color: #22c55e;
-        }
-
-        .num-text {
-            color: #1e40af;
-        }
-
-        .logo-text p {
-            font-size: 0.75rem;
-            color: #6c757d;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #495057;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #0D6EFD;
-        }
-
-        .btn-login {
-            background: linear-gradient(135deg, #0D6EFD 0%, #3dd598 100%);
-            color: white;
-            padding: 0.6rem 1.5rem;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
-            color: white;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #0D6EFD 0%, #3dd598 100%);
-            color: white;
-            padding: 4rem 2rem;
-        }
-
-        .hero-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .hero-content h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .hero-content p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            line-height: 1.8;
-            color: white;
-            opacity: 0.95;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            background-color: white;
-            color: #0D6EFD;
-            padding: 0.9rem 2rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            background-color: #f8f9fa;
-        }
-
-        .btn-secondary {
-            color: white;
-            padding: 0.9rem 2rem;
-            text-decoration: none;
-            font-weight: 600;
-            border: 2px solid white;
-            border-radius: 6px;
-            display: inline-block;
-            transition: background-color 0.3s;
-        }
-
-        .btn-secondary:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .hero-image {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        }
-
-        .hero-image img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 12px;
-        }
-
-        .dashboard-mockup {
-            background-color: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-
-        .mockup-header {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 1rem;
-        }
-
-        .mockup-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .mockup-dot:nth-child(1) { background-color: #ff5f56; }
-        .mockup-dot:nth-child(2) { background-color: #ffbd2e; }
-        .mockup-dot:nth-child(3) { background-color: #27c93f; }
-
-        .mockup-content {
-            background-color: #f8f9fa;
-            border-radius: 6px;
-            padding: 1.5rem;
-        }
-
-        .mockup-item {
-            background-color: white;
-            padding: 0.8rem;
-            margin-bottom: 0.6rem;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .mockup-icon {
-            width: 30px;
-            height: 30px;
-            background-color: #3dd598;
-            border-radius: 4px;
-        }
-
-        .mockup-bar {
-            flex: 1;
-            height: 8px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-        }
-
-        /* Description Section */
-        .description {
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-            text-align: center;
-        }
-
-        .description h3 {
-            font-size: 1.8rem;
-            color: #212529;
-            margin-bottom: 1rem;
-        }
-
-        .description p {
-            font-size: 1.1rem;
-            color: #6c757d;
-            max-width: 800px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-
-        /* Features Section */
-        .features {
-            background-color: white;
-            padding: 4rem 2rem;
-        }
-
-        .features-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .features h3 {
-            text-align: center;
-            font-size: 2rem;
-            color: #212529;
-            margin-bottom: 3rem;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            border-color: #0D6EFD;
-        }
-
-        .feature-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 1.5rem;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
-
-        .feature-card:nth-child(1) .feature-icon {
-            background: linear-gradient(135deg, #0D6EFD 0%, #3dd598 100%);
-            color: white;
-        }
-
-        .feature-card:nth-child(2) .feature-icon {
-            background: linear-gradient(135deg, #3dd598 0%, #0D6EFD 100%);
-            color: white;
-        }
-
-        .feature-card:nth-child(3) .feature-icon {
-            background: linear-gradient(135deg, #0D6EFD 0%, #3dd598 100%);
-            color: white;
-        }
-
-        .feature-card:nth-child(4) .feature-icon {
-            background: linear-gradient(135deg, #3dd598 0%, #0D6EFD 100%);
-            color: white;
-        }
-
-        .feature-card h4 {
-            font-size: 1.2rem;
-            color: #212529;
-            margin-bottom: 0.8rem;
-        }
-
-        .feature-card p {
-            color: #6c757d;
-            font-size: 0.95rem;
-        }
-
-        /* CTA Section */
-        .cta {
-            background: linear-gradient(135deg, #3dd598 0%, #0D6EFD 100%);
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-
-        .cta h3 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .btn-cta {
-            background-color: white;
-            color: #0D6EFD;
-            padding: 1rem 2.5rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-            transition: transform 0.3s, box-shadow 0.3s;
-            font-size: 1.1rem;
-        }
-
-        .btn-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-        }
-
-        /* Footer */
-        footer {
-            background-color: #212529;
-            color: #adb5bd;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer-container h4 {
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-container p {
-            font-size: 0.9rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                gap: 1rem;
+        
+        /* Fade-in animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-
-            nav ul {
-                flex-direction: column;
-                gap: 0.5rem;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-
-            .hero-container {
-                grid-template-columns: 1fr;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
-
-            .hero-content h2 {
-                font-size: 1.8rem;
+            to {
+                opacity: 1;
             }
-
-            .hero-image {
-                display: none;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
             }
-
-            .features-grid {
-                grid-template-columns: 1fr;
+            to {
+                opacity: 1;
+                transform: translateX(0);
             }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        /* Apply animations */
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .animate-slideInLeft {
+            animation: slideInLeft 0.6s ease-out forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        
+        
+        /* Initial state for animated elements - set to 0 before animation */
+        .animate-fadeInUp,
+        .animate-slideInLeft,
+        .animate-fadeIn {
+            opacity: 0;
+        }
+        
+        /* Hover effects */
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .icon-float:hover {
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        /* Remove pulse animation on hover to prevent conflict with fadeInUp */
+        .btn-pulse {
+            /* Pulse animation removed to prevent visibility issues */
+        }
+
+        
+        /* Smooth transitions for specific elements only */
+        a, button {
+            transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
     </style>
 </head>
-<body>
+<body class="antialiased">
+
     <!-- Header -->
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <div class="logo-text">
-                    <h1><span class="sup-text">Sup</span><span class="num-text">NumPortail</span></h1>
-                    <p>Institut Supérieur du Numérique</p>
+    <header class="bg-white border-b border-gray-200 animate-fadeIn">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="bg-blue-600 p-1.5 rounded">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
                 </div>
+                <span class="text-lg font-bold">
+                    <span class="text-green-600">SupNum</span><span class="text-blue-700">Portail</span>
+                </span>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="#accueil">Accueil</a></li>
-                    <li><a href="#apropos">À propos</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="{{ route('login') }}" class="btn-login">Connexion</a></li>
-                </ul>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-700">
+                <a href="#" class="hover:text-blue-600 transition-colors">Accueil</a>
+                <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-green-600 active:bg-green-600 text-white px-5 py-2 rounded-lg transition-colors">Connexion</a>
             </nav>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero" id="accueil">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h2>Bienvenue sur SupNumPortail</h2>
-                <p>La plateforme numérique officielle de gestion des services académiques de l'Institut Supérieur du Numérique</p>
-                <div class="hero-buttons">
-                    <a href="{{ route('login') }}" class="btn-primary">Accéder à SupNumPortail</a>
-                    <a href="#aide" class="btn-secondary">Aide à la connexion</a>
+    <section class="gradient-bg py-16 md:py-24">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="text-center lg:text-left">
+                    <h1 class="text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-6 animate-fadeInUp delay-100">
+                        Simplifiez vos démarches<br>académiques avec<br>
+                        <span class="text-green-600">SupNumPortail</span>.
+                    </h1>
+                    <p class="text-base md:text-lg text-gray-600 mb-8 animate-fadeInUp delay-200">
+                        La plateforme centralisée pour vos demandes administratives, le dépôt de certificats médicaux et le suivi de votre dossier étudiant à l'Institut SupNum.
+                    </p>
+                    <a href="{{ route('login') }}" class="inline-block bg-blue-600 hover:bg-green-600 active:bg-green-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg transition-all hover:shadow-xl animate-fadeInUp delay-300 btn-pulse">
+                        Accéder au portail
+                    </a>
                 </div>
-            </div>
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" alt="Étudiants travaillant sur des ordinateurs">
-            </div>
-        </div>
-    </section>
-
-    <!-- Description Section -->
-    <section class="description">
-        <h3>Une plateforme complète pour votre parcours académique</h3>
-        <p>SupNumPortail centralise l'ensemble de vos services académiques et administratifs en un seul endroit. Accédez facilement à vos demandes administratives, consultez vos certificats médicaux, téléchargez vos documents officiels et recevez des notifications en temps réel sur l'évolution de vos dossiers.</p>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features" id="services">
-        <div class="features-container">
-            <h3>Nos Services</h3>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📄</div>
-                    <h4>Gestion des demandes</h4>
-                    <p>Soumettez et suivez vos demandes administratives en ligne de manière simple et efficace</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🏥</div>
-                    <h4>Certificats médicaux</h4>
-                    <p>Gérez vos certificats médicaux et justificatifs d'absence en toute sécurité</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔔</div>
-                    <h4>Notifications en temps réel</h4>
-                    <p>Recevez des alertes instantanées sur l'état de vos demandes et documents</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📚</div>
-                    <h4>Services académiques</h4>
-                    <p>Accédez à tous vos services académiques depuis une interface unique et intuitive</p>
+                
+                <!-- Hero Image -->
+                <div class="animate-fadeInUp delay-400">
+                    <div class="rounded-2xl overflow-hidden shadow-2xl">
+                        <img src="{{ asset('images/hero-students.jpg') }}" alt="Étudiants SupNum" class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700">
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta">
-        <h3>Étudiant ou administrateur de SupNum ?</h3>
-        <a href="{{ route('login') }}" class="btn-cta">Se connecter</a>
+    <!-- Services Section -->
+    <section class="py-16 md:py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex items-center mb-12 animate-slideInLeft delay-200">
+                <div class="h-1 w-12 bg-green-500 mr-4"></div>
+                <h2 class="text-xs font-bold text-green-600 uppercase tracking-wider">Plateforme Étudiante</h2>
+            </div>
+            <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-12 animate-fadeInUp delay-300">Services disponibles</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Demandes Administratives -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-8 card-hover animate-fadeInUp delay-400">
+                    <div class="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6 icon-float">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Demandes Administratives</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Commandez vos certificats de scolarité, relevés de notes et attestations de réussite directement depuis votre espace.
+                    </p>
+                </div>
+
+                <!-- Certificats Médicaux -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-8 card-hover animate-fadeInUp delay-500">
+                    <div class="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6 icon-float">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Certificats Médicaux</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Déposez vos justificatifs d'absence en quelques clics pour une validation rapide par le secrétariat pédagogique.
+                    </p>
+                </div>
+
+                <!-- Suivi en Temps Réel -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-8 card-hover animate-fadeInUp delay-400">
+                    <div class="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6 icon-float">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Suivi en Temps Réel</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Recevez des alertes instantanées par email et sur tableau de bord dès qu'un document est prêt ou validé.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 md:py-20 bg-gray-50">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 animate-fadeInUp">Prêt à commencer ?</h2>
+            <p class="text-gray-600 mb-8 animate-fadeInUp delay-100">
+                Connectez-vous avec vos identifiants institutionnels pour accéder à votre espace personnel sécurisé.
+            </p>
+            <a href="{{ route('login') }}" class="inline-block bg-blue-600 hover:bg-green-600 active:bg-green-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg transition-all hover:shadow-xl mb-4 animate-fadeInUp delay-200 btn-pulse">
+                Se connecter maintenant
+            </a>
+            <div class="flex items-center justify-center text-sm text-gray-500">
+                <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                Authentification sécurisée par Institut SupNum
+            </div>
+        </div>
     </section>
 
     <!-- Footer -->
-    <footer id="contact">
-        <div class="footer-container">
-            <h4>Institut Supérieur du Numérique – SupNum</h4>
-            <p>&copy; {{ date('Y') }} SupNumPortail. Tous droits réservés.</p>
+    <footer class="bg-white border-t border-gray-200 py-8">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="flex items-center space-x-2 text-gray-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                    <span class="text-xs font-semibold">Institut SupNum</span>
+                </div>
+                
+                <p class="text-xs text-gray-500">© 2025 SupNumPortail. Tous droits réservés.</p>
+                
+                <div class="flex space-x-6 text-xs text-gray-500">
+                    <a href="#" class="hover:text-blue-600 transition-colors">Mentions Légales</a>
+                    <a href="#" class="hover:text-blue-600 transition-colors">Politique de Confidentialité</a>
+                    <a href="#" class="hover:text-blue-600 transition-colors">Support Technique</a>
+                </div>
+            </div>
         </div>
     </footer>
+
 </body>
 </html>

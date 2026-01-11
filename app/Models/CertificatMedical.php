@@ -9,34 +9,35 @@ class CertificatMedical extends Model
 {
     protected $table = 'certificat_medical';
 
-    protected $primaryKey = 'id_certificat';
-    public $timestamps = false;
+    protected $primaryKey = 'id';
+    public $timestamps = true;
+
+
+    const UPDATED_AT = null;
 
     protected $fillable = [
-        'etudiant_matricule',
+        'matricule_etudiant',
+        'photo_certificat',
         'annee',
-        'type_evaluation',
         'matiere',
-        'date_evaluation',
-        'fichier',
+        'type_evaluation',
+        'date_absence',
         'statut',
         'remarque_admin',
-        'date_upload',
         'admin_id',
     ];
 
     protected $casts = [
-        'date_evaluation' => 'datetime',
-        'date_upload' => 'datetime',
+        'date_absence' => 'date',
     ];
 
     public function etudiant()
     {
-        return $this->belongsTo(Etudiant::class, 'etudiant_matricule', 'matricule');
+        return $this->belongsTo(Etudiant::class, 'matricule_etudiant', 'matricule');
     }
 
     public function admin()
     {
-        return $this->belongsTo(Admin::class, 'admin_id', 'id_admin');
+        return $this->belongsTo(Admin::class, 'admin_id', 'id');
     }
 }

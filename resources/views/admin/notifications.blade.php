@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Mes Notifications - SupNumPortail</title>
+    <title>Notifications Admin - SupNumPortail</title>
     <style>
+        /* [Same CSS as student version] */
         * {
             margin: 0;
             padding: 0;
@@ -45,7 +46,7 @@
         .logo-icon {
             width: 24px;
             height: 24px;
-            background: #2196f3;
+            background: #4caf50; /* Green for Admin */
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -77,11 +78,11 @@
         }
 
         .nav-link:hover {
-            color: #2196f3;
+            color: #4caf50;
         }
 
         .nav-link.active {
-            color: #2196f3;
+            color: #4caf50;
             font-weight: 600;
         }
 
@@ -141,7 +142,7 @@
         }
 
         .notification-item.unread {
-            border-left: 4px solid #2196f3;
+            border-left: 4px solid #4caf50;
             padding-left: 20px;
         }
 
@@ -150,7 +151,7 @@
             height: 20px;
             margin-top: 2px;
             cursor: pointer;
-            accent-color: #2196f3;
+            accent-color: #4caf50;
         }
 
         .notification-content {
@@ -180,7 +181,7 @@
         }
 
         .badge.nouveau {
-            background: #2196f3;
+            background: #4caf50;
             color: white;
         }
 
@@ -200,7 +201,7 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background: #2196f3;
+            background: #4caf50;
             flex-shrink: 0;
             margin-top: 6px;
         }
@@ -246,43 +247,11 @@
         }
 
         .sidebar-action:hover {
-            background: #e8eaf6;
-            color: #2196f3;
+            background: #e8f5e9;
+            color: #4caf50;
         }
 
         .sidebar-action svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        /* Load More */
-        .load-more {
-            text-align: center;
-            margin-top: 32px;
-        }
-
-        .load-more-btn {
-            color: #2196f3;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 12px 24px;
-            border-radius: 8px;
-            transition: all 0.2s;
-            border: 1px solid #e3f2fd;
-            background: white;
-            cursor: pointer;
-        }
-
-        .load-more-btn:hover {
-            background: #e3f2fd;
-        }
-
-        .load-more-btn svg {
             width: 16px;
             height: 16px;
             fill: currentColor;
@@ -371,17 +340,17 @@
 <body>
     <!-- Header -->
     <header class="header">
-        <a href="{{ route('etudiant.dashboard') }}" class="logo">
+        <a href="{{ route('admin.dashboard') }}" class="logo">
             <div class="logo-icon">
                 <div class="logo-icon-inner"></div>
             </div>
-            <span>SupNumPortail</span>
+            <span>Admin Portal</span>
         </a>
         <nav class="nav">
-            <a href="{{ route('etudiant.dashboard') }}" class="nav-link">Dashboard</a>
-            <a href="{{ route('etudiant.demandes.index') }}" class="nav-link">Demandes</a>
-            <a href="{{ route('etudiant.certificats.index') }}" class="nav-link">Certificats</a>
-            <a href="{{ route('etudiant.profil') }}" class="nav-link">Profil</a>
+            <a href="{{ route('admin.dashboard') }}" class="nav-link">Dashboard</a>
+            <a href="{{ route('admin.demandes.index') }}" class="nav-link">Demandes</a>
+            <a href="{{ route('admin.certificats.index') }}" class="nav-link">Certificats</a>
+            <a href="{{ route('admin.etudiants.import') }}" class="nav-link">Import</a>
         </nav>
     </header>
 
@@ -389,8 +358,8 @@
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">
-            <h1>Mes Notifications</h1>
-            <p>Gérez vos mises à jour administratives et académiques.</p>
+            <h1>Notifications Admin</h1>
+            <p>Gérez vos notifications système et alertes de gestion.</p>
         </div>
 
         <div class="notifications-container">
@@ -405,11 +374,11 @@
                         <div class="notification-header">
                             <span class="notification-title">
                                 @if(str_contains(strtolower($notification->message), 'certificat'))
-                                    Mise à jour Certificat Médical
+                                    Alerte Certificat Médical
                                 @elseif(str_contains(strtolower($notification->message), 'demande'))
-                                    Mise à jour Demande Administrative
+                                    Alerte Nouvelle Demande
                                 @else
-                                    Notification Système
+                                    Alerte Système
                                 @endif
                             </span>
                             @if(!$notification->lu)
@@ -460,7 +429,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-        © {{ date('Y') }} SupNumPortail - Tous droits réservés.
+        © {{ date('Y') }} SupNumPortail Admin - Tous droits réservés.
     </footer>
 
     <script>
@@ -484,7 +453,7 @@
 
             console.log('Marking notification as read:', id);
             
-            fetch(`/etudiant/notifications/${id}/read`, {
+            fetch(`/admin/notifications/${id}/read`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -536,7 +505,7 @@
 
         // Mark all notifications as read
         function markAllAsRead() {
-            fetch('/etudiant/notifications/mark-all-read', {
+            fetch('/admin/notifications/mark-all-read', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -584,14 +553,6 @@
                 alert('Erreur lors de la communication avec le serveur. Veuillez réessayer.');
             });
         }
-
-        // Checkbox selection (visual only for now)
-        const checkboxes = document.querySelectorAll('.notification-checkbox');
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function(e) {
-                e.stopPropagation();
-            });
-        });
     </script>
 </body>
 </html>

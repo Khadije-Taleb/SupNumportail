@@ -9,10 +9,12 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    use HasFactory;
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     protected $table = 'utilisateur';
-    
-    protected $primaryKey = 'id_utilisateur';
+
+    protected $primaryKey = 'id';
 
     public $timestamps = false; // The table uses date_creation
 
@@ -23,9 +25,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'email',
-        'mot_de_passe',
+        'password',
         'role',
-        'actif',
         'premiere_connexion',
     ];
 
@@ -34,7 +35,7 @@ class User extends Authenticatable
      */
     public function getAuthPassword()
     {
-        return $this->mot_de_passe;
+        return $this->password;
     }
 
     /**
@@ -43,7 +44,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'mot_de_passe',
+        'password',
     ];
 
     /**
@@ -91,16 +92,21 @@ class User extends Authenticatable
     // Relationships
     public function etudiant()
     {
-        return $this->hasOne(Etudiant::class, 'id_utilisateur', 'id_utilisateur');
+        return $this->hasOne(Etudiant::class, 'utilisateur_id', 'id');
     }
 
     public function admin()
     {
-        return $this->hasOne(Admin::class, 'id_utilisateur', 'id_utilisateur');
+        return $this->hasOne(Admin::class, 'utilisateur_id', 'id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'id_utilisateur', 'id');
     }
 
     public function getAllNotifications()
     {
-        return $this->hasMany(Notification::class, 'id_utilisateur', 'id_utilisateur');
+        return $this->notifications();
     }
 }

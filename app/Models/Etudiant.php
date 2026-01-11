@@ -20,21 +20,22 @@ class Etudiant extends Model
         'prenom',
         'filiere',
         'annee',
-        'id_utilisateur',
+        'email',
+        'utilisateur_id',
     ];
 
     public function utilisateur()
     {
-        return $this->belongsTo(User::class, 'id_utilisateur', 'id_utilisateur');
+        return $this->belongsTo(User::class, 'utilisateur_id', 'id');
     }
 
     public function demandes()
     {
-        return $this->hasMany(Demande::class, 'matricule', 'matricule');
+        return $this->hasMany(Demande::class, 'matricule_etudiant', 'matricule');
     }
 
     public function certificatMedicals()
     {
-        return $this->hasMany(CertificatMedical::class, 'etudiant_matricule', 'matricule');
+        return $this->hasMany(CertificatMedical::class, 'matricule_etudiant', 'matricule');
     }
 }

@@ -9,34 +9,35 @@ class Demande extends Model
 {
     protected $table = 'demande';
 
-    protected $primaryKey = 'id_demande';
-    public $timestamps = false;
+    protected $primaryKey = 'id';
+    public $timestamps = true;
+
+
 
     protected $fillable = [
-        'date_demande',
+        'matricule_etudiant',
+        'document_id',
         'statut',
         'remarque_admin',
-        'matricule',
-        'id_document',
-        'id_admin',
+        'admin_id',
     ];
 
     protected $casts = [
-        'date_demande' => 'datetime',
+        
     ];
 
     public function etudiant()
     {
-        return $this->belongsTo(Etudiant::class, 'matricule', 'matricule');
+        return $this->belongsTo(Etudiant::class, 'matricule_etudiant', 'matricule');
     }
 
     public function document()
     {
-        return $this->belongsTo(Document::class, 'id_document', 'id_document');
+        return $this->belongsTo(Document::class, 'document_id', 'id');
     }
 
     public function admin()
     {
-        return $this->belongsTo(Admin::class, 'id_admin', 'id_admin');
+        return $this->belongsTo(Admin::class, 'admin_id', 'id');
     }
 }

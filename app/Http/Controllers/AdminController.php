@@ -10,20 +10,50 @@ class AdminController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Demande::with('etudiant.utilisateur', 'document');
+        $type = $request->get('type');
+        $statut = $request->get('statut');
 
-        if ($request->filled('statut')) {
-            $query->where('statut', $request->statut);
+        if ($type === 'certificat') {
+            $query = \App\Models\CertificatMedical::with('etudiant.utilisateur');
+            if ($statut) {
+                $query->where('statut', $statut);
+            }
+            $items = $query->latest('created_at')->get();
+        } else {
+            $query = Demande::with('etudiant.utilisateur', 'document');
+            if ($statut) {
+                $query->where('statut', $statut);
+            }
+            if ($type) {
+                $query->whereHas('document', function($q) use ($type) {
+                    $q->where('id', $type);
+                });
+            }
+            $items = $query->latest('created_at')->get();
         }
-
-        $demandes = $query->latest('date_demande')->get();
-        // Simple counts for now
+        
+        // Comprehensive stats
         $stats = [
-            'total' => Demande::count(),
-            'pending' => Demande::where('statut', 'en_attente')->count(),
-            'pending_certificats' => \App\Models\CertificatMedical::where('statut', 'EN_ATTENTE')->count(),
+            'total' => Demande::count() + \App\Models\CertificatMedical::count(),
+            'pending' => Demande::where('statut', 'en_attente')->count() + \App\Models\CertificatMedical::where('statut', 'EN_ATTENTE')->count(),
+            'in_progress' => Demande::where('statut', 'en_cours_traitement')->count(),
+            'completed_month' => (Demande::where('statut', 'fin')
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count()) + (\App\Models\CertificatMedical::where('statut', 'VALIDE')
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count()),
         ];
-        return view('admin.dashboard', compact('demandes', 'stats'));
+
+        $documents = \App\Models\Document::all();
+
+        return view('admin.dashboard', [
+            'demandes' => $items, // Re-using variable name for simplicity in view or renaming later
+            'stats' => $stats,
+            'documents' => $documents,
+            'is_certificat' => ($type === 'certificat')
+        ]);
     }
 
     public function showImportForm()

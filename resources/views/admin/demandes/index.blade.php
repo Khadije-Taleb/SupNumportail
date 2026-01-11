@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validation des Certificats Médicaux - SupNumPortail</title>
+    <title>Gestion des Demandes - SupNumPortail</title>
     <style>
         * {
             margin: 0;
@@ -79,7 +79,7 @@
             font-weight: 500;
         }
 
-        .settings-icon {
+        .user-menu {
             display: flex;
             align-items: center;
             gap: 0.75rem;
@@ -188,25 +188,10 @@
             font-weight: 500;
         }
 
-        .status-EN_ATTENTE {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-EN_COURS {
-            background-color: #dbeafe;
-            color: #1e40af;
-        }
-
-        .status-VALIDE {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-REFUSE {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
+        .status-en_attente { background-color: #fef3c7; color: #92400e; }
+        .status-en_cours_traitement { background-color: #dbeafe; color: #1e40af; }
+        .status-fin { background-color: #d1fae5; color: #065f46; }
+        .status-rejetee { background-color: #fee2e2; color: #991b1b; }
 
         .action-link {
             color: #2563eb;
@@ -259,49 +244,10 @@
             font-weight: 500;
         }
 
-        /* Document Preview */
-        .document-preview {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            border-radius: 0.75rem;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 250px;
-            margin-bottom: 1rem;
-            border: 1px solid #e2e8f0;
-        }
-
-        .document-preview img {
-            max-width: 100%;
-            max-height: 400px;
-            border-radius: 0.25rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .document-preview iframe {
-            width: 100%;
-            height: 400px;
-            border: none;
-        }
-
-        /* Remarque */
-        textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            font-family: inherit;
-            font-size: 0.9375rem;
-            resize: vertical;
-            min-height: 80px;
-            margin-bottom: 1rem;
-        }
-
         /* Action Buttons */
         .action-buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 0.75rem;
         }
 
@@ -315,12 +261,27 @@
             transition: all 0.2s;
             text-align: center;
             text-decoration: none;
+            width: 100%;
         }
 
         .btn-reject { background-color: #dc2626; color: white; }
         .btn-reject:hover { background-color: #b91c1c; }
-        .btn-accept { background-color: #16a34a; color: white; }
-        .btn-accept:hover { background-color: #15803d; }
+        .btn-process { background-color: #2563eb; color: white; }
+        .btn-process:hover { background-color: #1d4ed8; }
+        .btn-finish { background-color: #16a34a; color: white; }
+        .btn-finish:hover { background-color: #15803d; }
+
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 0.9375rem;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 1rem;
+        }
 
         .placeholder-panel {
             text-align: center;
@@ -340,11 +301,11 @@
             <nav class="nav">
                 <a href="{{ route('admin.dashboard') }}">Dashboard</a>
                 <a href="{{ route('admin.etudiants.import') }}">Importation</a>
-                <a href="{{ route('admin.certificats.index') }}" class="active">Certificats</a>
-                <a href="{{ route('admin.demandes.index') }}">Demandes</a>
+                <a href="{{ route('admin.certificats.index') }}">Certificats</a>
+                <a href="{{ route('admin.demandes.index') }}" class="active">Demandes</a>
             </nav>
         </div>
-        <div class="settings-icon">
+        <div class="user-menu">
             <span>👤</span>
             <span>{{ Auth::user()->nom ?? 'Admin' }}</span>
             <form method="POST" action="{{ route('logout') }}" style="margin-left: 1rem;">
@@ -359,19 +320,18 @@
         <!-- Left Panel -->
         <div class="left-panel">
             <div class="page-header">
-                <h1>Validation des Certificats Médicaux</h1>
-                <p class="page-description">Passez en revue et traitez les justificatifs d'absence soumis par les étudiants.</p>
+                <h1>Gestion des Demandes</h1>
+                <p class="page-description">Traitez les demandes de documents administratifs des étudiants.</p>
                 
-                <form action="{{ route('admin.certificats.index') }}" method="GET" style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+                <form action="{{ route('admin.demandes.index') }}" method="GET" style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;">
                     <select name="statut" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; background: white; font-size: 0.875rem;">
-                        <option value="EN_ATTENTE" {{ request('statut') == 'EN_ATTENTE' ? 'selected' : '' }}>En attente</option>
-                        <option value="VALIDE" {{ request('statut') == 'VALIDE' ? 'selected' : '' }}>Accepté</option>
-                        <option value="REFUSE" {{ request('statut') == 'REFUSE' ? 'selected' : '' }}>Refusé</option>
+                        <option value="">Tous les statuts</option>
+                        <option value="en_attente" {{ request('statut') == 'en_attente' ? 'selected' : '' }}>En attente</option>
+                        <option value="en_cours_traitement" {{ request('statut') == 'en_cours_traitement' ? 'selected' : '' }}>En cours</option>
+                        <option value="fin" {{ request('statut') == 'fin' ? 'selected' : '' }}>Terminé</option>
+                        <option value="rejetee" {{ request('statut') == 'rejetee' ? 'selected' : '' }}>Rejetée</option>
                     </select>
                     <button type="submit" style="padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer; font-weight: 500;">Filtrer</button>
-                    @if(request('statut'))
-                        <a href="{{ route('admin.certificats.index') }}" style="font-size: 0.875rem; color: #64748b; text-decoration: none;">Réinitialiser</a>
-                    @endif
                 </form>
             </div>
 
@@ -386,111 +346,94 @@
                     <thead>
                         <tr>
                             <th>ÉTUDIANT</th>
-                            <th>DATE D'ABSENCE</th>
-                            <th>MATIÈRE</th>
+                            <th>DOCUMENT</th>
+                            <th>DATE</th>
                             <th>STATUT</th>
                             <th>ACTION</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $selectedId = $certificat->id ?? null;
-                        @endphp
-                        @forelse($certificats as $cert)
-                            <tr onclick="window.location='{{ route('admin.certificats.show', $cert->id) }}'" class="{{ $selectedId == $cert->id ? 'active' : '' }}">
+                        @php $selectedId = $demande->id ?? null; @endphp
+                        @forelse($demandes as $dem)
+                            <tr onclick="window.location='{{ route('admin.demandes.show', $dem->id) }}'" class="{{ $selectedId == $dem->id ? 'active' : '' }}">
                                 <td>
-                                    <div class="student-name">{{ $cert->etudiant->prenom ?? '' }} {{ $cert->etudiant->nom ?? '' }}</div>
-                                    <div class="student-id">{{ $cert->etudiant->matricule ?? '' }}</div>
+                                    <div class="student-name">{{ $dem->etudiant->prenom ?? '' }} {{ $dem->etudiant->nom ?? '' }}</div>
+                                    <div class="student-id">{{ $dem->etudiant->matricule ?? '' }}</div>
                                 </td>
-                                <td>{{ $cert->date_absence ? $cert->date_absence->format('d M Y') : 'N/A' }}</td>
-                                <td>{{ $cert->matiere }}</td>
+                                <td>{{ $dem->document->nom_document ?? 'N/A' }}</td>
+                                <td>{{ $dem->created_at->format('d/m/Y') }}</td>
                                 <td>
-                                    <span class="status-badge status-{{ $cert->statut }}">
-                                        {{ $cert->statut }}
+                                    <span class="status-badge status-{{ $dem->statut }}">
+                                        {{ str_replace('_', ' ', $dem->statut) }}
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.certificats.show', $cert->id) }}" class="action-link">Voir</a>
+                                    <a href="{{ route('admin.demandes.show', $dem->id) }}" class="action-link">Voir</a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">Aucun certificat trouvé.</td>
+                                <td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">Aucune demande trouvée.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
                 <div style="padding: 1rem;">
-                    {{ $certificats->links() }}
+                    {{ $demandes->links() }}
                 </div>
             </div>
         </div>
 
         <!-- Right Panel -->
         <div class="right-panel">
-            @if(isset($certificat))
+            @if(isset($demande))
                 <div class="panel-header">
-                    <h3 class="panel-title">Détails du Certificat</h3>
+                    <h3 class="panel-title">Traitement de la Demande</h3>
                 </div>
 
                 <div class="detail-group">
                     <div class="detail-label">Étudiant</div>
-                    <div class="detail-value">{{ $certificat->etudiant->prenom ?? '' }} {{ $certificat->etudiant->nom ?? '' }}</div>
+                    <div class="detail-value">{{ $demande->etudiant->prenom ?? '' }} {{ $demande->etudiant->nom ?? '' }}</div>
                 </div>
 
                 <div class="detail-group">
-                    <div class="detail-label">Matricule</div>
-                    <div class="detail-value">{{ $certificat->etudiant->matricule ?? 'N/A' }}</div>
+                    <div class="detail-label">Document Demandé</div>
+                    <div class="detail-value" style="font-size: 1.125rem; color: #2563eb; font-weight: 700;">{{ $demande->document->nom_document ?? 'N/A' }}</div>
                 </div>
 
                 <div class="detail-group">
-                    <div class="detail-label">Date d'absence</div>
-                    <div class="detail-value">{{ $certificat->date_absence ? $certificat->date_absence->format('d F Y') : 'N/A' }}</div>
+                    <div class="detail-label">Filière / Année</div>
+                    <div class="detail-value">{{ $demande->etudiant->filiere ?? 'N/A' }} / {{ $demande->etudiant->annee ?? 'N/A' }}</div>
                 </div>
 
-                <div class="detail-group">
-                    <div class="detail-label">Type d'examen / Matière</div>
-                    <div class="detail-value">{{ $certificat->type_evaluation }} - {{ $certificat->matiere }}</div>
-                </div>
-
-                <div class="detail-label">APERÇU DU DOCUMENT</div>
-                <div class="document-preview">
-                    @php
-                        $extension = pathinfo($certificat->photo_certificat, PATHINFO_EXTENSION);
-                        $isPdf = strtolower($extension) === 'pdf';
-                    @endphp
-
-                    @if($isPdf)
-                        <iframe src="{{ route('admin.certificats.viewFile', $certificat) }}"></iframe>
-                    @else
-                        <img src="{{ route('admin.certificats.viewFile', $certificat) }}" alt="Certificat">
-                    @endif
-                </div>
-
-                <form action="{{ route('admin.certificats.updateStatus', $certificat) }}" method="POST">
+                <form action="{{ route('admin.demandes.updateStatus', $demande->id) }}" method="POST">
                     @csrf
                     @method('PUT')
+                    
                     <div class="remarque-section">
                         <div class="detail-label">REMARQUE ADMINISTRATIVE</div>
-                        <textarea name="remarque_admin" placeholder="Justifiez votre décision ici...">{{ $certificat->remarque_admin }}</textarea>
+                        <textarea name="remarque_admin" placeholder="Ajoutez un commentaire ou motif de rejet...">{{ $demande->remarque_admin }}</textarea>
                     </div>
 
                     <div class="action-buttons">
-                        @if($certificat->statut === 'EN_ATTENTE')
-                            <button type="submit" name="statut" value="REFUSE" class="btn btn-reject">Rejeter</button>
-                            <button type="submit" name="statut" value="VALIDE" class="btn btn-accept">Accepter</button>
+                        @if($demande->statut === 'en_attente')
+                            <button type="submit" name="statut" value="en_cours_traitement" class="btn btn-process">Mettre en cours</button>
+                            <button type="submit" name="statut" value="rejetee" class="btn btn-reject" style="margin-top: 0.5rem;">Rejeter la demande</button>
+                        @elseif($demande->statut === 'en_cours_traitement')
+                            <button type="submit" name="statut" value="fin" class="btn btn-finish">Terminer (Prêt au retrait)</button>
+                            <button type="submit" name="statut" value="rejetee" class="btn btn-reject" style="margin-top: 0.5rem;">Rejeter finalement</button>
                         @else
-                            <div style="grid-column: span 2; text-align: center; padding: 1rem; background: #f8fafc; border-radius: 0.5rem; font-weight: bold;">
-                                Déjà traité ({{ $certificat->statut }})
+                            <div style="text-align: center; padding: 1.5rem; background: #f8fafc; border-radius: 0.75rem; font-weight: bold; color: #64748b; border: 1px dashed #cbd5e1;">
+                                Dossier Classé ({{ str_replace('_', ' ', $demande->statut) }})
                             </div>
                         @endif
                     </div>
                 </form>
             @else
                 <div class="placeholder-panel">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
-                    <h3>Sélectionnez un certificat</h3>
-                    <p>Cliquez sur un certificat dans la liste pour voir les détails et le traiter.</p>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+                    <h3>Sélectionnez une demande</h3>
+                    <p>Choisissez une demande dans la liste pour commencer le traitement.</p>
                 </div>
             @endif
         </div>
@@ -498,7 +441,7 @@
 
     <!-- Footer -->
     <div class="footer">
-        © {{ date('Y') }} SupNumPortail - Administration des Certificats Médicaux
+        © {{ date('Y') }} SupNumPortail - Service Scolarité
     </div>
 </body>
 </html>

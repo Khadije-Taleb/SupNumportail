@@ -1,87 +1,395 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="bg-gradient-to-r from-blue-700 to-indigo-600 py-6 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 shadow-lg">
-            <h2 class="font-bold text-2xl text-white leading-tight">
-                {{ __('Nouvelle Demande Administrative') }}
-            </h2>
-            <p class="text-blue-100 text-sm mt-1">Sélectionnez le document que vous souhaitez obtenir auprès de l'administration.</p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Nouvelle Demande - Institut SupNum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #2196f3;
+        }
+
+        .nav-link.active {
+            color: #2196f3;
+            border-bottom-color: #2196f3;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 32px;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+        }
+
+        /* Alert */
+        .alert {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .alert-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            fill: #2196f3;
+        }
+
+        .alert-content {
+            flex: 1;
+            font-size: 14px;
+            color: #1565c0;
+            line-height: 1.5;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-select,
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .form-select:focus,
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: #2196f3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background: #fafbfc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #2196f3;
+            background: #f5f9ff;
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            fill: #999;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        /* Button */
+        .btn-submit {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            float: right;
+        }
+
+        .btn-submit:hover {
+            background: #1976d2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .footer a {
+            color: #2196f3;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 16px 20px;
+            }
+            .container {
+                padding: 24px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    @php
+        $user = Auth::user();
+        $initials = '';
+        if($user && $user->full_name) {
+            $parts = explode(' ', $user->full_name);
+            $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+        }
+    @endphp
+
+    <header class="header">
+        <div class="logo"> <span style="color: green;">SupNum</span><span style="color: blue;">Portail</span></div>
+        <nav class="nav">
+            <a href="{{ route('etudiant.dashboard') }}" class="nav-link">Dashboard</a>
+            <a href="{{ route('etudiant.demandes.index') }}" class="nav-link active">Demandes</a>
+            <a href="{{ route('etudiant.certificats.create') }}" class="nav-link">Certificats</a>
+            <a href="{{ route('etudiant.profil') }}" class="nav-link">Profil</a>
+            <div class="user-avatar" onclick="window.location='{{ route('etudiant.profil') }}'">{{ $initials }}</div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Nouvelle Demande Administrative</h1>
+            <p>Sélectionnez le document que vous souhaitez obtenir auprès de l'administration.</p>
         </div>
-    </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700">
-                <div class="p-8">
+        <div class="card">
+            <form action="{{ route('etudiant.demandes.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                
+                <div class="form-group">
+                    <label class="form-label">Type de document</label>
+                    <select name="document_id" class="form-select @error('document_id') border-red-500 @enderror" required>
+                        <option value="">Choisir un document...</option>
+                        @foreach($documents as $document)
+                            <option value="{{ $document->id }}" {{ old('document_id') == $document->id ? 'selected' : '' }}>
+                                {{ $document->nom_document }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('document_id')
+                        <p style="color: #f44336; font-size: 12px; margin-top: 4px;">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="form-group">
                     
-                    @if(session('success'))
-                        <div class="mb-6 bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r-lg shadow-sm" role="alert">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                                <span class="font-bold">{{ session('success') }}</span>
-                            </div>
-                        </div>
-                    @endif
-
-                    <form method="POST" action="{{ route('etudiant.demandes.store') }}" class="space-y-6">
-                        @csrf
+                    
                         
-                        <div>
-                            <label for="id_document" class="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-widest">Type de Document</label>
-                            <select id="id_document" name="id_document" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all shadow-sm" required>
-                                <option value="" disabled selected>— Choisir parmi les documents disponibles —</option>
-                                @foreach($documents as $document)
-                                    <option value="{{ $document->id_document }}">{{ $document->type_document }}</option>
-                                @endforeach
-                            </select>
-                            <p class="mt-2 text-xs text-gray-500 italic">Ex: Attestation de scolarité, Relevé de notes, etc.</p>
-                            @error('id_document')
-                                <p class="mt-2 text-sm text-red-600 font-semibold">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        
+                    
 
-                        <div>
-                            <label for="commentaire" class="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-widest">Note / Justification (Optionnel)</label>
-                            <textarea id="commentaire" name="commentaire" rows="4" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all shadow-sm" placeholder="Précisez l'année ou tout autre détail pertinent..."></textarea>
-                            @error('commentaire')
-                                <p class="mt-2 text-sm text-red-600 font-semibold">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="pt-4 flex items-center justify-between border-t dark:border-gray-700">
-                             <a href="{{ route('etudiant.dashboard') }}" class="text-sm font-bold text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors flex items-center">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                                Annuler
-                             </a>
-                            <button type="submit" class="inline-flex items-center px-6 py-3 bg-blue-600 border border-transparent rounded-xl font-bold text-sm text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-lg hover:scale-105 transform">
-                                Transmettre la demande
-                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </form>
-
+                <div class="form-group">
+                    <label class="form-label">Note / Justification (Optionnel)</label>
+                    <textarea name="commentaire" class="form-textarea @error('commentaire') border-red-500 @enderror" placeholder="Précisez l'année ou tout autre détail pertinent...">{{ old('commentaire') }}</textarea>
+                    @error('commentaire')
+                        <p style="color: #f44336; font-size: 12px; margin-top: 4px;">{{ $message }}</p>
+                    @enderror
                 </div>
-            </div>
-            
-            <!-- Information Card -->
-            <div class="mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-6">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+
+                <div class="flex items-center justify-between" style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+                    <a href="{{ route('etudiant.demandes.index') }}" style="color: #666; text-decoration: none; font-size: 14px; font-weight: 600;">Annuler</a>
+                    <button type="submit" class="btn-submit">
+                        <svg class="btn-icon" viewBox="0 0 24 24">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="text-sm font-bold text-blue-800 dark:text-blue-300 uppercase tracking-wider">Processus de traitement</h3>
-                        <div class="mt-2 text-sm text-blue-700 dark:text-blue-400">
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li>Votre demande sera examinée par le service administratif.</li>
-                                <li>Vous recevrez une notification dès qu'une décision sera prise.</li>
-                                <li>Vous pourrez consulter l'état d'avancement dans votre espace personnel.</li>
-                            </ul>
-                        </div>
-                    </div>
+                        <span>Transmettre la demande</span>
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
-</x-app-layout>
+
+    <footer class="footer">
+        © 2024 Institut SupNum. Tous droits réservés.
+    </footer>
+
+    <script>
+        // File upload preview
+        const fileInput = document.getElementById('justificatif');
+        const uploadArea = document.querySelector('.upload-area');
+        const uploadText = document.getElementById('upload-feedback');
+
+        fileInput.addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                uploadText.textContent = fileName;
+                uploadArea.style.borderColor = '#4caf50';
+                uploadArea.style.background = '#f1f8f4';
+            }
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#2196f3';
+            this.style.background = '#f5f9ff';
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#ddd';
+            this.style.background = '#fafbfc';
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#ddd';
+            this.style.background = '#fafbfc';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        });
+    </script>
+</body>
+</html>
+

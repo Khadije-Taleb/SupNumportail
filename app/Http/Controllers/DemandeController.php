@@ -17,8 +17,9 @@ class DemandeController extends Controller
             return redirect()->route('etudiant.profil')->with('warning', 'Veuillez compléter votre profil pour voir vos demandes.');
         }
 
-        $demandes = $user->etudiant->demandes()->with('document')->latest('date_demande')->paginate(10);
-        return view('etudiant.mes_demandes', compact('demandes'));
+        $demandes = $user->etudiant->demandes()->with('document')->latest('created_at')->paginate(10);
+        $documents = Document::all();
+        return view('etudiant.mes_demandes', compact('demandes', 'documents'));
     }
 
     public function create()
@@ -30,8 +31,9 @@ class DemandeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_document' => 'required|exists:document,id_document',
+            'document_id' => 'required|exists:document,id',
             'commentaire' => 'nullable|string|max:500',
+            
         ]);
 
         $user = Auth::user();
@@ -39,11 +41,15 @@ class DemandeController extends Controller
             return redirect()->route('etudiant.profil')->with('error', 'Vous devez compléter votre profil étudiant avant de faire une demande.');
         }
 
+        $path = null;
+        if ($request->hasFile('justificatif')) {
+            $path = $request->file('justificatif')->store('justificatifs', 'public');
+        }
+
         Demande::create([
-            'matricule' => $user->etudiant->matricule,
-            'id_document' => $request->id_document,
-            'statut' => 'EN_ATTENTE',
-            'date_demande' => now(),
+            'matricule_etudiant' => $user->etudiant->matricule,
+            'document_id' => $request->document_id,
+            'statut' => 'en_attente',
         ]);
 
         return redirect()->route('etudiant.demandes.index')->with('success', 'Votre demande a été enregistrée avec succès.');
@@ -86,10 +92,10 @@ class DemandeController extends Controller
             }
 
             \App\Models\Notification::create([
-                'id_utilisateur' => $demande->etudiant->utilisateur->id_utilisateur,
+                'id_utilisateur' => $demande->etudiant->utilisateur->id,
+                'matricule_etudiant' => $demande->etudiant->matricule,
                 'message' => "Demande administrative traitée : " . $message,
                 'lu' => false,
-                'date_notification' => now(),
             ]);
         }
 

@@ -29,7 +29,7 @@ class InitialPasswordController extends Controller
         ]);
 
         $request->user()->update([
-            'mot_de_passe' => Hash::make($validated['password']), // Using mot_de_passe as per User model
+            'password' => Hash::make($validated['password']),
             'premiere_connexion' => false,
         ]);
 

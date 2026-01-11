@@ -9,16 +9,16 @@ class Document extends Model
 {
     protected $table = 'document';
 
-    protected $primaryKey = 'id_document';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
-        'type_document',
+        'nom_document',
         'description',
     ];
 
     public function demandes()
     {
-        return $this->hasMany(Demande::class, 'id_document', 'id_document');
+        return $this->hasMany(Demande::class, 'document_id', 'id');
     }
 }

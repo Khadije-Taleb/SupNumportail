@@ -9,23 +9,30 @@ class Notification extends Model
 {
     protected $table = 'notification';
 
-    protected $primaryKey = 'id_notification';
-    public $timestamps = false;
+    protected $primaryKey = 'id';
+    public $timestamps = true;
+
+
+    const UPDATED_AT = null;
 
     protected $fillable = [
-        'message',
-        'date_notification',
-        'lu',
         'id_utilisateur',
+        'matricule_etudiant',
+        'message',
+        'lu',
     ];
 
     protected $casts = [
         'lu' => 'boolean',
-        'date_notification' => 'datetime',
     ];
 
-    public function user()
+    public function etudiant()
     {
-        return $this->belongsTo(User::class, 'id_utilisateur', 'id_utilisateur');
+        return $this->belongsTo(Etudiant::class, 'matricule_etudiant', 'matricule');
+    }
+
+    public function utilisateur()
+    {
+        return $this->belongsTo(User::class, 'id_utilisateur', 'id');
     }
 }
