@@ -75,6 +75,10 @@ Route::middleware(['auth', 'role:ADMIN'])->prefix('admin')->as('admin.')->group(
 
 
 
+    // Manage Document Types
+    Route::resource('document-types', \App\Http\Controllers\Admin\DocumentManagementController::class);
+    Route::post('document-types/{document}/toggle-status', [\App\Http\Controllers\Admin\DocumentManagementController::class, 'toggleStatus'])->name('document-types.toggle');
+
     // Import Students
     Route::get('/etudiants/import', [App\Http\Controllers\Admin\EtudiantImportController::class, 'showImportForm'])->name('etudiants.import');
     Route::get('/etudiants/import/template', [\App\Http\Controllers\Admin\EtudiantImportController::class, 'downloadTemplate'])->name('etudiants.template');

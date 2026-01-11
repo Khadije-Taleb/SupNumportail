@@ -9,7 +9,7 @@
                         {{-- <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" /> --}}
                         <div class="flex flex-col">
                            <h1 class="text-xl font-bold leading-tight">
-                               <span class="text-green-500">Sup</span><span class="text-blue-700 dark:text-blue-500">NumPortail</span>
+                               <span class="text-green-600">SupNum</span><span class="text-blue-700 dark:text-blue-500">Portail</span>
                            </h1>
                            <p class="text-[0.65rem] text-gray-500 uppercase tracking-wider leading-none">Institut Supérieur du Numérique</p>
                         </div>

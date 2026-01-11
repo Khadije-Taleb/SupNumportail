@@ -166,15 +166,15 @@
 
         .btn-login {
             width: 100%;
-            padding: 13px;
-            background: #2196f3;
+            padding: 8px 20px;
+            background: #2563eb;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 8px; /* rounded-lg */
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background-color 0.15s ease-in-out; /* transition-colors */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -182,7 +182,7 @@
         }
 
         .btn-login:hover {
-            background: #1976d2;
+            background: #16a34a; /* hover:bg-green-600 */
         }
 
         .btn-login:active {
@@ -194,20 +194,7 @@
             height: 16px;
             fill: white;
         }
-         .icon-float:hover {
-            animation: float 2s ease-in-out infinite;
-        }
-        
-        /* Remove pulse animation on hover to prevent conflict with fadeInUp */
-        .btn-pulse {
-            /* Pulse animation removed to prevent visibility issues */
-        }
-
-        
-        /* Smooth transitions for specific elements only */
-        a, button {
-            transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        }
+         
 
         .footer {
             text-align: center;
@@ -256,7 +243,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Espace Numérique</h1>
+            <h1 style="font-size: 1.5rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0;">
+                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
+            </h1>
             <p>Portail unifié Étudiants & Administration</p>
         </div>
 
@@ -298,7 +287,7 @@
                             name="login" 
                             class="form-input @error('login') error @enderror" 
                             value="{{ old('login') }}" 
-                            placeholder="prenom.nom@supnum.edu"
+                            placeholder="matricule@supnum.mr"
                             required 
                             autofocus
                         >

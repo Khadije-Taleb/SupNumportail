@@ -36,24 +36,14 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            font-size: 1rem;
+            gap: 0;
+            font-weight: 700;
+            font-size: 1.125rem;
             color: #1e293b;
             text-decoration: none;
         }
 
-        .logo-icon {
-            width: 24px;
-            height: 24px;
-            background-color: #2563eb;
-            border-radius: 0.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
+        /* .logo-icon removed */
 
         .nav {
             display: flex;
@@ -369,11 +359,11 @@
     <header class="header">
         <div class="header-left">
             <a href="{{ route('admin.dashboard') }}" class="logo">
-                <div class="logo-icon">SN</div>
-                <span>SupNumPortail</span>
+                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
             </a>
             <nav class="nav">
                 <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+                <a href="{{ route('admin.document-types.index') }}">Documents</a>
                 <a href="{{ route('admin.etudiants.import') }}" class="active">Importation</a>
                 <a href="{{ route('admin.certificats.index') }}">Certificats</a>
                 <a href="{{ route('admin.demandes.index') }}">Demandes</a>

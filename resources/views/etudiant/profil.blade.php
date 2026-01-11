@@ -39,11 +39,11 @@
         }
 
         .logo {
-            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            font-size: 1.125rem;
             font-weight: 700;
-            color: #1a1a1a;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             text-decoration: none;
         }
 
@@ -326,7 +326,9 @@
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <a href="{{ route('etudiant.dashboard') }}" class="logo">SUPNUMPORTAIL</a>
+            <a href="{{ route('etudiant.dashboard') }}" class="logo">
+                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
+            </a>
             <a href="{{ route('etudiant.dashboard') }}" class="nav-link">Tableau de bord</a>
             <a href="{{ route('etudiant.profil') }}" class="nav-link active">Profil</a>
         </div>

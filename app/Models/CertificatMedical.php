@@ -19,8 +19,7 @@ class CertificatMedical extends Model
         'matricule_etudiant',
         'photo_certificat',
         'annee',
-        'matiere',
-        'type_evaluation',
+        'evaluation_id',
         'date_absence',
         'statut',
         'remarque_admin',
@@ -39,5 +38,13 @@ class CertificatMedical extends Model
     public function admin()
     {
         return $this->belongsTo(Admin::class, 'admin_id', 'id');
+    }
+
+    /**
+     * Get the evaluation associated with this certificat
+     */
+    public function evaluation()
+    {
+        return $this->belongsTo(Evaluation::class, 'evaluation_id', 'id');
     }
 }

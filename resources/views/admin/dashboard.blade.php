@@ -37,37 +37,20 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
+            gap: 0;
+            font-weight: 700;
             font-size: 1.125rem;
-            color: #1e293b;
             text-decoration: none;
         }
 
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background-color: #3b82f6;
-            border-radius: 0.375rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
+        /* .logo-icon removed/ignored */
 
         .nav {
             display: flex;
             gap: 1.5rem;
         }
 
-        .nav a {
-            text-decoration: none;
-            color: #64748b;
-            font-size: 0.9375rem;
-            transition: color 0.2s;
-            padding: 0.25rem 0;
-        }
+/* ... existing nav styles ... */
 
         .nav a:hover {
             color: #1e293b;
@@ -137,23 +120,23 @@
         }
 
         .import-btn {
-            background-color: #3b82f6;
+            background-color: #2563eb;
             color: white;
             border: none;
-            padding: 0.625rem 1.25rem;
-            border-radius: 0.5rem;
+            padding: 8px 20px;
+            border-radius: 8px;
             font-size: 0.9375rem;
             font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            transition: background-color 0.2s;
+            transition: background-color 0.15s ease-in-out;
             text-decoration: none;
         }
 
         .import-btn:hover {
-            background-color: #2563eb;
+            background-color: #16a34a;
         }
 
         /* Stats Cards */
@@ -395,11 +378,11 @@
     <header class="header">
         <div class="header-left">
             <a href="{{ route('admin.dashboard') }}" class="logo">
-                <div class="logo-icon">SN</div>
-                <span>SupNumPortail</span>
+                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
             </a>
             <nav class="nav">
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
+                <a href="{{ route('admin.document-types.index') }}" class="{{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}">Documents</a>
                 <a href="{{ route('admin.etudiants.import') }}" class="{{ request()->routeIs('admin.etudiants.import') ? 'active' : '' }}">Importer Etudiants</a>
                 <a href="{{ route('admin.certificats.index') }}" class="{{ request()->routeIs('admin.certificats.*') ? 'active' : '' }}">Certificats Médicaux</a>
                 <a href="{{ route('admin.demandes.index') }}" class="{{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}">Gestion des Demandes</a>

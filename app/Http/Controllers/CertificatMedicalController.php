@@ -16,27 +16,10 @@ class CertificatMedicalController extends Controller
              return redirect()->route('etudiant.profil')->with('warning', 'Veuillez compléter votre profil pour gérer vos certificats.');
         }
 
-        $certificats = $user->etudiant->certificatMedicals()->latest('created_at')->get();
+        $certificats = $user->etudiant->certificatMedicals()->with('evaluation')->latest('created_at')->get();
 
-        // Load available evaluations for the form. If evaluation table or columns are missing,
-        // fallback to distinct values from certificat_medical so the form remains functional.
-        $evaluations = collect();
-        if (Schema::hasTable('evaluation') && Schema::hasColumn('evaluation', 'matiere') && Schema::hasColumn('evaluation', 'type_evaluation')) {
-            $evaluations = \App\Models\Evaluation::orderBy('matiere')->orderBy('type_evaluation')->get();
-        } elseif (Schema::hasTable('certificat_medical') && Schema::hasColumn('certificat_medical', 'matiere') && Schema::hasColumn('certificat_medical', 'type_evaluation')) {
-            $evaluations = \App\Models\CertificatMedical::select('matiere', 'type_evaluation')
-                ->distinct()
-                ->orderBy('matiere')
-                ->get()
-                ->map(function ($row) {
-                    // Create lightweight objects compatible with the view
-                    return (object) [
-                        'id' => null,
-                        'matiere' => $row->matiere,
-                        'type_evaluation' => $row->type_evaluation,
-                    ];
-                });
-        }
+        // Load available evaluations for the form
+        $evaluations = \App\Models\Evaluation::orderBy('nom_matiere')->orderBy('type_evaluation')->get();
 
         return view('etudiant.certificat_medical', compact('certificats', 'evaluations'));
     }
@@ -50,7 +33,8 @@ class CertificatMedicalController extends Controller
     {
         $request->validate([
             'annee' => 'required|in:L1,L2,L3,M1,M2',
-            'evaluation_id' => 'required|integer',
+            'nom_matiere' => 'required|string|max:100',
+            'type_evaluation' => 'required|in:devoir_ecrit,devoir_pratique,tp_note,examen_final',
             'date_evaluation' => 'required|date',
             'fichier' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
@@ -60,20 +44,21 @@ class CertificatMedicalController extends Controller
             return back()->with('error', 'Profil étudiant non trouvé.');
         }
 
-        // Find evaluation and ensure it exists
-        $evaluation = \App\Models\Evaluation::find($request->evaluation_id);
-        if (!$evaluation) {
-            return back()->withInput()->with('error', 'Évaluation sélectionnée invalide.');
-        }
+        // Find or create the evaluation based on user input
+        $evaluation = \App\Models\Evaluation::firstOrCreate(
+            [
+                'nom_matiere' => $request->nom_matiere,
+                'type_evaluation' => $request->type_evaluation
+            ]
+        );
 
         $path = $request->file('fichier')->store('certificats', 'public');
 
         CertificatMedical::create([
             'matricule_etudiant' => $user->etudiant->matricule,
             'annee' => $request->annee,
-            'type_evaluation' => $evaluation->type_evaluation,
-            'matiere' => $evaluation->matiere,
-            'date_absence' => $request->date_evaluation, // Mapping date_evaluation from form to date_absence in DB
+            'evaluation_id' => $evaluation->id,
+            'date_absence' => $request->date_evaluation,
             'photo_certificat' => $path,
             'statut' => 'EN_ATTENTE',
             'admin_id' => null,
@@ -85,23 +70,42 @@ class CertificatMedicalController extends Controller
 
     public function adminIndex(Request $request)
     {
-        $query = CertificatMedical::with('etudiant.utilisateur');
+        $query = CertificatMedical::with(['etudiant.utilisateur', 'evaluation']);
 
+        // Filter by status
         if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
         } else {
             $query->where('statut', 'EN_ATTENTE');
         }
 
+        // Filter by matiere (via evaluation table)
+        if ($request->filled('matiere')) {
+            $query->whereHas('evaluation', function($q) use ($request) {
+                $q->where('nom_matiere', $request->matiere);
+            });
+        }
+
+        // Filter by type_evaluation (via evaluation table)
+        if ($request->filled('type_evaluation')) {
+            $query->whereHas('evaluation', function($q) use ($request) {
+                $q->where('type_evaluation', $request->type_evaluation);
+            });
+        }
+
         $certificats = $query->latest()->paginate(10);
 
-        return view('admin.certificats.index', compact('certificats'));
+        // Get distinct matieres and types for filter dropdowns
+        $matieres = \App\Models\Evaluation::distinct()->pluck('nom_matiere')->sort();
+        $typesEvaluation = \App\Models\Evaluation::distinct()->pluck('type_evaluation')->sort();
+
+        return view('admin.certificats.index', compact('certificats', 'matieres', 'typesEvaluation'));
     }
 
     public function adminShow(CertificatMedical $certificat)
     {
-        $certificat->load(['etudiant.utilisateur']);
-        $certificats = CertificatMedical::with('etudiant.utilisateur')->latest()->paginate(10);
+        $certificat->load(['etudiant.utilisateur', 'evaluation']);
+        $certificats = CertificatMedical::with(['etudiant.utilisateur', 'evaluation'])->latest()->paginate(10);
         return view('admin.certificats.index', compact('certificat', 'certificats'));
     }
 

@@ -36,10 +36,9 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
+            gap: 0;
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 700; /* font-bold */
             text-decoration: none;
         }
 
@@ -599,8 +598,7 @@
     <!-- Header -->
     <header class="header">
         <a href="{{ route('etudiant.dashboard') }}" class="logo">
-
-            <span>Institut SupNum</span>
+            <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
         </a>
         <nav class="nav">
             <a href="{{ route('etudiant.dashboard') }}" class="nav-link">Dashboard</a>
@@ -671,21 +669,21 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Évaluation (matière + type)</label>
-                            @if($evaluations->isEmpty())
-                                <div class="text-sm text-red-600">Aucune évaluation disponible pour le moment. Veuillez contacter l'administration.</div>
-                                <select class="form-select" disabled>
-                                    <option>Aucune évaluation</option>
-                                </select>
-                            @else
-                                <select name="evaluation_id" class="form-select" required>
-                                    <option value="">Sélectionnez une évaluation...</option>
-                                    @foreach($evaluations as $eval)
-                                        <option value="{{ $eval->id }}" {{ old('evaluation_id') == $eval->id ? 'selected' : '' }}>{{ $eval->matiere }} — {{ str_replace('_', ' ', $eval->type_evaluation) }}</option>
-                                    @endforeach
-                                </select>
-                                @error('evaluation_id') <div class="text-sm text-red-600">{{ $message }}</div> @enderror
-                            @endif
+                            <label class="form-label">Nom de la matière</label>
+                            <input type="text" name="nom_matiere" class="form-input" placeholder="Ex: Mathématiques, Algorithmes..." value="{{ old('nom_matiere') }}" required>
+                            @error('nom_matiere') <div class="text-sm text-red-600">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Type d'évaluation</label>
+                            <select name="type_evaluation" class="form-select" required>
+                                <option value="">Choisir le type...</option>
+                                <option value="devoir_ecrit" {{ old('type_evaluation') == 'devoir_ecrit' ? 'selected' : '' }}>Devoir écrit</option>
+                                <option value="devoir_pratique" {{ old('type_evaluation') == 'devoir_pratique' ? 'selected' : '' }}>Devoir pratique</option>
+                                <option value="tp_note" {{ old('type_evaluation') == 'tp_note' ? 'selected' : '' }}>TP noté</option>
+                                <option value="examen_final" {{ old('type_evaluation') == 'examen_final' ? 'selected' : '' }}>Examen final</option>
+                            </select>
+                            @error('type_evaluation') <div class="text-sm text-red-600">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="form-group">
@@ -774,8 +772,8 @@
                                 <td style="color: #999;">{{ $cert->created_at->format('d/m/Y') }}</td>
                                 <td style="font-weight: 600;">{{ $cert->date_absence ? $cert->date_absence->format('d M Y') : '-' }}</td>
                                 <td>
-                                    <div style="font-weight: 500;">{{ Str::limit($cert->matiere ?? 'N/A', 25) }}</div>
-                                    <div style="font-size: 11px; color: #666; text-transform: uppercase;">{{ str_replace('_', ' ', $cert->type_evaluation) }}</div>
+                                    <div style="font-weight: 500;">{{ $cert->evaluation->nom_matiere ?? 'N/A' }}</div>
+                                    <div style="font-size: 11px; color: #666; text-transform: uppercase;">{{ str_replace('_', ' ', $cert->evaluation->type_evaluation ?? '') }}</div>
                                 </td>
                                 <td>
                                     <span class="status-badge {{ strtoupper($cert->statut) }}">

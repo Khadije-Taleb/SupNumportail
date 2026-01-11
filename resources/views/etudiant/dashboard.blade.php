@@ -41,34 +41,13 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0;
+            font-size: 1.125rem;
+            font-weight: 700;
+            text-decoration: none;
         }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: #2196f3;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .logo-text h1 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        .logo-text p {
-            font-size: 11px;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        /* Removed old logo styles */
 
         .header-title {
             font-size: 18px;
@@ -504,11 +483,7 @@
     <header class="header">
         <div class="header-left">
             <div class="logo">
-                <div class="logo-icon">S</div>
-                <div class="logo-text">
-                    <h1>Institut SupNum</h1>
-                    <p>Portail Étudiant</p>
-                </div>
+                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
             </div>
             <span class="header-title">Tableau de bord</span>
         </div>

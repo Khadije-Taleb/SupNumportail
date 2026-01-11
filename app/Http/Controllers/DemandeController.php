@@ -18,22 +18,26 @@ class DemandeController extends Controller
         }
 
         $demandes = $user->etudiant->demandes()->with('document')->latest('created_at')->paginate(10);
-        $documents = Document::all();
+        $documents = Document::where('actif', true)->get();
         return view('etudiant.mes_demandes', compact('demandes', 'documents'));
     }
 
     public function create()
     {
-        $documents = Document::all();
+        $documents = Document::where('actif', true)->get();
         return view('etudiant.nouvelle_demande', compact('documents'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'document_id' => 'required|exists:document,id',
+            'document_id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('document', 'id')->where(function ($query) {
+                    $query->where('actif', true);
+                }),
+            ],
             'commentaire' => 'nullable|string|max:500',
-            
         ]);
 
         $user = Auth::user();

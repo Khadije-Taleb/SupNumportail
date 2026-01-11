@@ -15,6 +15,7 @@ class Document extends Model
     protected $fillable = [
         'nom_document',
         'description',
+        'actif',
     ];
 
     public function demandes()

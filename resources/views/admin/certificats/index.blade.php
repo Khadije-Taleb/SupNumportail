@@ -37,24 +37,13 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #1e293b;
+            gap: 0;
+            font-weight: 700;
+            font-size: 1.125rem;
             text-decoration: none;
         }
 
-        .logo-icon {
-            width: 24px;
-            height: 24px;
-            background-color: #2563eb;
-            border-radius: 0.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
+        /* .logo-icon removed */
 
         .nav {
             display: flex;
@@ -334,11 +323,11 @@
     <header class="header">
         <div class="header-left">
             <a href="{{ route('admin.dashboard') }}" class="logo">
-                <div class="logo-icon">SN</div>
-                <span>SupNumPortail</span>
+                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
             </a>
             <nav class="nav">
                 <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+                <a href="{{ route('admin.document-types.index') }}">Documents</a>
                 <a href="{{ route('admin.etudiants.import') }}">Importation</a>
                 <a href="{{ route('admin.certificats.index') }}" class="active">Certificats</a>
                 <a href="{{ route('admin.demandes.index') }}">Demandes</a>
@@ -362,14 +351,30 @@
                 <h1>Validation des Certificats Médicaux</h1>
                 <p class="page-description">Passez en revue et traitez les justificatifs d'absence soumis par les étudiants.</p>
                 
-                <form action="{{ route('admin.certificats.index') }}" method="GET" style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+                <form action="{{ route('admin.certificats.index') }}" method="GET" style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
                     <select name="statut" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; background: white; font-size: 0.875rem;">
+                        <option value="">Tous les statuts</option>
                         <option value="EN_ATTENTE" {{ request('statut') == 'EN_ATTENTE' ? 'selected' : '' }}>En attente</option>
                         <option value="VALIDE" {{ request('statut') == 'VALIDE' ? 'selected' : '' }}>Accepté</option>
                         <option value="REFUSE" {{ request('statut') == 'REFUSE' ? 'selected' : '' }}>Refusé</option>
                     </select>
+                    
+                    <select name="matiere" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; background: white; font-size: 0.875rem;">
+                        <option value="">Toutes les matières</option>
+                        @foreach($matieres ?? [] as $matiere)
+                            <option value="{{ $matiere }}" {{ request('matiere') == $matiere ? 'selected' : '' }}>{{ $matiere }}</option>
+                        @endforeach
+                    </select>
+                    
+                    <select name="type_evaluation" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; background: white; font-size: 0.875rem;">
+                        <option value="">Tous les types</option>
+                        @foreach($typesEvaluation ?? [] as $type)
+                            <option value="{{ $type }}" {{ request('type_evaluation') == $type ? 'selected' : '' }}>{{ str_replace('_', ' ', ucfirst($type)) }}</option>
+                        @endforeach
+                    </select>
+                    
                     <button type="submit" style="padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer; font-weight: 500;">Filtrer</button>
-                    @if(request('statut'))
+                    @if(request('statut') || request('matiere') || request('type_evaluation'))
                         <a href="{{ route('admin.certificats.index') }}" style="font-size: 0.875rem; color: #64748b; text-decoration: none;">Réinitialiser</a>
                     @endif
                 </form>
@@ -403,7 +408,10 @@
                                     <div class="student-id">{{ $cert->etudiant->matricule ?? '' }}</div>
                                 </td>
                                 <td>{{ $cert->date_absence ? $cert->date_absence->format('d M Y') : 'N/A' }}</td>
-                                <td>{{ $cert->matiere }}</td>
+                                <td>
+                                    <div style="font-weight: 500;">{{ $cert->evaluation->nom_matiere ?? 'N/A' }}</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;">{{ str_replace('_', ' ', ucfirst($cert->evaluation->type_evaluation ?? '')) }}</div>
+                                </td>
                                 <td>
                                     <span class="status-badge status-{{ $cert->statut }}">
                                         {{ $cert->statut }}
@@ -449,8 +457,13 @@
                 </div>
 
                 <div class="detail-group">
-                    <div class="detail-label">Type d'examen / Matière</div>
-                    <div class="detail-value">{{ $certificat->type_evaluation }} - {{ $certificat->matiere }}</div>
+                    <div class="detail-label">Matière</div>
+                    <div class="detail-value">{{ $certificat->evaluation->nom_matiere ?? 'N/A' }}</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">Type d'évaluation</div>
+                    <div class="detail-value">{{ str_replace('_', ' ', ucfirst($certificat->evaluation->type_evaluation ?? 'N/A')) }}</div>
                 </div>
 
                 <div class="detail-label">APERÇU DU DOCUMENT</div>

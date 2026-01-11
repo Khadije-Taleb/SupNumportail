@@ -36,31 +36,12 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 16px;
+            gap: 0;
+            font-size: 1.125rem;
             font-weight: 700;
-            color: #1a1a1a;
             text-decoration: none;
         }
-
-        .logo-icon {
-            width: 24px;
-            height: 24px;
-            background: #4caf50; /* Green for Admin */
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: rotate(45deg);
-        }
-
-        .logo-icon-inner {
-            width: 12px;
-            height: 12px;
-            background: white;
-            border-radius: 2px;
-            transform: rotate(-45deg);
-        }
+        /* .logo-icon removed */
 
         .nav {
             display: flex;
@@ -341,10 +322,7 @@
     <!-- Header -->
     <header class="header">
         <a href="{{ route('admin.dashboard') }}" class="logo">
-            <div class="logo-icon">
-                <div class="logo-icon-inner"></div>
-            </div>
-            <span>Admin Portal</span>
+            <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
         </a>
         <nav class="nav">
             <a href="{{ route('admin.dashboard') }}" class="nav-link">Dashboard</a>

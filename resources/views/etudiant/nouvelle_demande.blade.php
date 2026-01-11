@@ -33,9 +33,13 @@
         }
 
         .logo {
-            font-size: 18px;
-            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            font-size: 1.125rem;
+            font-weight: 700;
             color: #1a1a1a;
+            text-decoration: none;
         }
 
         .nav {
@@ -282,7 +286,9 @@
     @endphp
 
     <header class="header">
-        <div class="logo"> <span style="color: green;">SupNum</span><span style="color: blue;">Portail</span></div>
+        <a href="{{ route('etudiant.dashboard') }}" class="logo">
+            <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
+        </a>
         <nav class="nav">
             <a href="{{ route('etudiant.dashboard') }}" class="nav-link">Dashboard</a>
             <a href="{{ route('etudiant.demandes.index') }}" class="nav-link active">Demandes</a>

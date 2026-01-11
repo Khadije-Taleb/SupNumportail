@@ -35,12 +35,12 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 16px;
+            gap: 0;
+            font-size: 1.125rem;
             font-weight: 700;
-            color: #1a1a1a;
             text-decoration: none;
         }
+        /* .logo-icon removed */
 
         .logo-icon {
             width: 24px;
@@ -372,10 +372,7 @@
     <!-- Header -->
     <header class="header">
         <a href="{{ route('etudiant.dashboard') }}" class="logo">
-            <div class="logo-icon">
-                <div class="logo-icon-inner"></div>
-            </div>
-            <span>SupNumPortail</span>
+            <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
         </a>
         <nav class="nav">
             <a href="{{ route('etudiant.dashboard') }}" class="nav-link">Dashboard</a>
