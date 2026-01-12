@@ -22,14 +22,138 @@
         /* Header */
         .header {
             background: white;
-            padding: 16px 40px;
+            border-bottom: 3px solid #2196f3;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            font-size: 1.125rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #64748b;
+            font-size: 0.9375rem;
+            transition: color 0.2s;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: #1e293b;
+        }
+
+        .nav-link.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #f5f7fa;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .icon-btn:hover {
+            background: #e8eaf6;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #666;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #f44336;
+            color: white;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 4px;
+            border-radius: 9px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #f5f7fa;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-info p {
+            font-size: 11px;
+            color: #999;
         }
 
         .header-left {
@@ -246,46 +370,7 @@
             margin-top: 48px;
         }
 
-        /* Floating Toolbar */
-        .toolbar {
-            position: fixed;
-            bottom: 32px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 12px 16px;
-            display: flex;
-            gap: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
 
-        .toolbar-btn {
-            width: 48px;
-            height: 48px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .toolbar-btn:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .toolbar-btn.active {
-            background: #2196f3;
-        }
-
-        .toolbar-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-        }
 
         /* Alert Messages */
         .alert {
@@ -305,6 +390,84 @@
             background: #ffebee;
             color: #c62828;
             border-left: 4px solid #f44336;
+        }
+
+        /* Standard Header CSS */
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #f5f7fa;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .icon-btn:hover {
+            background: #e8eaf6;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #666;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #f44336;
+            color: white;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 4px;
+            border-radius: 9px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #f5f7fa;
+            cursor: pointer;
+        }
+
+        .user-info h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-info p {
+            font-size: 11px;
+            color: #999;
         }
 
         @media (max-width: 768px) {
@@ -329,21 +492,38 @@
             <a href="{{ route('etudiant.dashboard') }}" class="logo">
                 <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
             </a>
-            <a href="{{ route('etudiant.dashboard') }}" class="nav-link">Tableau de bord</a>
-            <a href="{{ route('etudiant.profil') }}" class="nav-link active">Profil</a>
+            <nav class="nav">
+                <a href="{{ route('etudiant.dashboard') }}" class="nav-link {{ request()->routeIs('etudiant.dashboard') ? 'active' : '' }}">Dashboard</a>
+                <a href="{{ route('etudiant.demandes.index') }}" class="nav-link {{ request()->routeIs('etudiant.demandes.*') ? 'active' : '' }}">Demandes</a>
+                <a href="{{ route('etudiant.certificats.create') }}" class="nav-link {{ request()->routeIs('etudiant.certificats.*') ? 'active' : '' }}">Certificats</a>
+                <a href="{{ route('etudiant.profil') }}" class="nav-link {{ request()->routeIs('etudiant.profil') ? 'active' : '' }}">Profil</a>
+            </nav>
         </div>
         <div class="header-right">
-            <div class="user-info">
-                <div class="user-name">{{ $user->full_name }}</div>
-                <div class="user-id">{{ $etudiant->matricule ?? 'N/A' }}</div>
-            </div>
-            <a href="{{ route('logout') }}" class="logout-btn" 
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                Déconnexion
+             <a href="{{ route('etudiant.notifications.index') }}" class="icon-btn" style="text-decoration: none;">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                </svg>
+                @if(isset($unreadCount) && $unreadCount > 0)
+                    <span class="notification-badge">{{ $unreadCount }}</span>
+                @endif
             </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            <form method="POST" action="{{ route('logout') }}" style="display: flex; align-items: center;">
                 @csrf
+                <button type="submit" class="icon-btn" title="Déconnexion" style="color: #ef4444;">
+                    <svg viewBox="0 0 24 24" style="fill: currentColor;">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                </button>
             </form>
+            <div class="user-menu" onclick="window.location='{{ route('etudiant.profil') }}'">
+                <div class="user-avatar">{{ Auth::user()->initials }}</div>
+                <div class="user-info">
+                    <h3>{{ Auth::user()->full_name }}</h3>
+                    <p>Étudiant {{ Auth::user()->etudiant->annee ?? '' }}</p>
+                </div>
+            </div>
+            <!-- Logout hidden or moved to user menu logic in future, currently kept in page or menu -->
         </div>
     </header>
 
@@ -438,29 +618,7 @@
         <div class="footer-text">© 2024 SUPNUMPORTAIL - INSTITUT SUPÉRIEUR DU NUMÉRIQUE</div>
     </footer>
 
-    <!-- Floating Toolbar -->
-    <div class="toolbar">
-        <a href="{{ route('etudiant.dashboard') }}" class="toolbar-btn {{ request()->routeIs('etudiant.dashboard') ? 'active' : '' }}" title="Dashboard">
-            <svg viewBox="0 0 24 24">
-                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
-            </svg>
-        </a>
-        <a href="{{ route('etudiant.demandes.index') }}" class="toolbar-btn {{ request()->routeIs('etudiant.demandes.*') ? 'active' : '' }}" title="Demandes">
-            <svg viewBox="0 0 24 24">
-                <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-            </svg>
-        </a>
-        <a href="{{ route('etudiant.certificats.create') }}" class="toolbar-btn {{ request()->routeIs('etudiant.certificats.*') ? 'active' : '' }}" title="Certificats">
-            <svg viewBox="0 0 24 24">
-                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-            </svg>
-        </a>
-        <a href="{{ route('etudiant.profil') }}" class="toolbar-btn {{ request()->routeIs('etudiant.profil') ? 'active' : '' }}" title="Profil">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-            </svg>
-        </a>
-    </div>
+
 
     <script>
         // Auto-hide success/error messages after 5 seconds

@@ -1,89 +1,185 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Détails de la demande') }} #{{ $demande->id }}
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de la demande - SupNumPortail</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8f9fa; color: #1e293b; }
+        
+        /* Header Standard */
+        .header { background-color: white; border-bottom: 1px solid #e2e8f0; padding: 0 2rem; height: 64px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); margin-bottom: 2rem; }
+        .header-left { display: flex; align-items: center; gap: 3rem; }
+        .logo { display: flex; align-items: center; gap: 0; font-weight: 700; font-size: 1.25rem; color: #1e293b; text-decoration: none; }
+        .nav { display: flex; gap: 2rem; }
+        .nav-link { text-decoration: none; color: #64748b; font-size: 0.9375rem; font-weight: 500; transition: color 0.2s; height: 64px; display: flex; align-items: center; border-bottom: 2px solid transparent; }
+        .nav-link:hover { color: #1e293b; }
+        .nav-link.active { color: #2563eb; border-bottom-color: #2563eb; }
+        .header-right { display: flex; align-items: center; gap: 2rem; }
+        .user-menu { display: flex; align-items: center; gap: 0.5rem; color: #64748b; }
+        .user-icon { color: #4c1d95; display: flex; align-items: center; }
+        .logout-btn { color: #ef4444; font-weight: 600; font-size: 0.9375rem; text-decoration: none; background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; }
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-4 border-blue-500 mb-6">
-                <div class="p-6">
-                    <h3 class="text-lg font-bold mb-4 text-blue-800">Informations de l'étudiant</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-xs uppercase text-gray-500 font-semibold">Nom & Prénom</p>
-                            <p class="font-medium">{{ $demande->etudiant->nom ?? '' }} {{ $demande->etudiant->prenom ?? '' }}</p>
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        
+        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: #64748b; text-decoration: none; font-weight: 500; margin-bottom: 1.5rem; font-size: 0.9rem; transition: color 0.2s; }
+        .back-link:hover { color: #2563eb; }
+
+        .page-header { margin-bottom: 2rem; }
+        .page-title { font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
+        .page-subtitle { color: #64748b; }
+
+        .card { background: white; border-radius: 0.75rem; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+        .card-header { border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 1.1rem; font-weight: 600; color: #1e293b; display: flex; align-items: center; gap: 0.5rem; }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        .detail-item { margin-bottom: 1rem; }
+        .label { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+        .value { font-size: 1rem; font-weight: 500; color: #0f172a; }
+
+        .status-badge { display: inline-block; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
+        .status-en_attente { background: #fef3c7; color: #92400e; }
+        .status-en_cours_traitement { background: #dbeafe; color: #1e40af; }
+        .status-fin { background: #dcfce7; color: #166534; }
+        .status-rejetee { background: #fee2e2; color: #991b1b; }
+
+        .form-group { margin-bottom: 1.5rem; }
+        select, textarea { width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; font-family: inherit; font-size: 0.95rem; }
+        select:focus, textarea:focus { outline: none; border-color: #2563eb; ring: 3px rgba(37,99,235,0.1); }
+        .btn-primary { background: #2563eb; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
+        .btn-primary:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <a href="{{ route('admin.dashboard') }}" class="logo">
+                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
+            </a>
+            <nav class="nav">
+                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
+                <a href="{{ route('admin.document-types.index') }}" class="nav-link {{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}">Documents</a>
+                <a href="{{ route('admin.etudiants.import') }}" class="nav-link {{ request()->routeIs('admin.etudiants.import') ? 'active' : '' }}">Importation</a>
+                <a href="{{ route('admin.certificats.index') }}" class="nav-link {{ request()->routeIs('admin.certificats.*') ? 'active' : '' }}">Certificats</a>
+                <a href="{{ route('admin.demandes.index') }}" class="nav-link {{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}">Demandes</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="user-menu">
+                <div class="user-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>
+                <span>Admin</span>
+            </div>
+            
+            <form method="POST" action="{{ route('logout') }}" style="margin: 0; display: flex;">
+                @csrf
+                <button type="submit" class="logout-btn">
+                    Déconnexion
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="{{ route('admin.demandes.index') }}" class="back-link">
+            <span>←</span> Retour aux demandes
+        </a>
+        
+        <div class="page-header">
+            <h1 class="page-title">Détails de la demande #{{ $demande->id }}</h1>
+            <p class="page-subtitle">Soumise le {{ $demande->created_at->format('d/m/Y à H:i') }}</p>
+        </div>
+
+        <div class="grid-2">
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>👤</span> Informations de l'Étudiant
                         </div>
-                        <div>
-                            <p class="text-xs uppercase text-gray-500 font-semibold">Matricule</p>
-                            <p class="font-medium">{{ $demande->etudiant->matricule ?? 'N/A' }}</p>
+                    </div>
+                    <div class="grid-2" style="gap: 1.5rem;">
+                        <div class="detail-item">
+                            <div class="label">Nom & Prénom</div>
+                            <div class="value">{{ $demande->etudiant->nom ?? '' }} {{ $demande->etudiant->prenom ?? '' }}</div>
                         </div>
-                        <div>
-                            <p class="text-xs uppercase text-gray-500 font-semibold">Filière</p>
-                            <p class="font-medium">{{ $demande->etudiant->filiere ?? 'N/A' }}</p>
+                        <div class="detail-item">
+                            <div class="label">Matricule</div>
+                            <div class="value">{{ $demande->etudiant->matricule ?? 'N/A' }}</div>
                         </div>
-                        <div>
-                            <p class="text-xs uppercase text-gray-500 font-semibold">Email</p>
-                            <p class="font-medium">{{ $demande->etudiant->utilisateur->email ?? 'N/A' }}</p>
+                        <div class="detail-item">
+                            <div class="label">Filière</div>
+                            <div class="value">{{ $demande->etudiant->filiere ?? 'N/A' }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Email</div>
+                            <div class="value">{{ $demande->etudiant->utilisateur->email ?? 'N/A' }}</div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6">
-                    <h3 class="text-lg font-bold mb-4">Détails de la demande</h3>
-                    <div class="mb-4">
-                        <p class="text-xs uppercase text-gray-500 font-semibold">Document demandé</p>
-                        <p class="font-medium">{{ $demande->document->nom_document ?? 'N/A' }}</p>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>📄</span> Informations sur la Demande
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <p class="text-xs uppercase text-gray-500 font-semibold">Date de soumission</p>
-                        <p class="font-medium">{{ $demande->created_at->format('d/m/Y H:i') }}</p>
+                    <div class="detail-item">
+                        <div class="label">Document Demandé</div>
+                        <div class="value" style="color: #2563eb; font-weight: 700;">{{ $demande->document->nom_document ?? 'N/A' }}</div>
                     </div>
-                    <div class="mb-4">
-                        <p class="text-xs uppercase text-gray-500 font-semibold">Statut actuel</p>
-                        <span class="px-3 py-1 inline-flex text-sm font-bold rounded-full 
-                            {{ $demande->statut == 'fin' ? 'bg-green-100 text-green-800' : '' }}
-                            {{ $demande->statut == 'en_attente' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                            {{ $demande->statut == 'en_cours_traitement' ? 'bg-blue-100 text-blue-800' : '' }}
-                            {{ $demande->statut == 'rejetee' ? 'bg-red-100 text-red-800' : '' }}
-                        ">
-                            {{ strtoupper(str_replace('_', ' ', $demande->statut)) }}
+                    <div class="detail-item">
+                        <div class="label">Statut Actuel</div>
+                        <span class="status-badge status-{{ $demande->statut }}">
+                            {{ str_replace('_', ' ', $demande->statut) }}
                         </span>
                     </div>
+                    @if($demande->remarque_admin)
+                    <div class="detail-item" style="margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
+                        <div class="label">Remarque Administrative</div>
+                        <div class="value">{{ $demande->remarque_admin }}</div>
+                    </div>
+                    @endif
                 </div>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <h3 class="text-lg font-bold mb-4">Mettre à jour le statut</h3>
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>⚙️</span> Traitement de la Demande
+                        </div>
+                    </div>
                     <form action="{{ route('admin.demandes.updateStatus', $demande->id) }}" method="POST">
                         @csrf
                         @method('PUT')
-                        <div class="mb-4">
-                            <x-input-label for="statut" :value="__('Nouveau statut')" />
-                            <select name="statut" id="statut" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                        
+                        <div class="form-group">
+                            <div class="label">Nouveau Statut</div>
+                            <select name="statut" class="mt-1">
+                                <option value="en_attente" {{ $demande->statut == 'en_attente' ? 'selected' : '' }}>En attente</option>
                                 <option value="en_cours_traitement" {{ $demande->statut == 'en_cours_traitement' ? 'selected' : '' }}>En cours de traitement</option>
                                 <option value="fin" {{ $demande->statut == 'fin' ? 'selected' : '' }}>Terminé (Prêt)</option>
-                                <option value="rejetee" {{ $demande->statut == 'rejetee' ? 'selected' : '' }}>Rejeter la demande</option>
+                                <option value="rejetee" {{ $demande->statut == 'rejetee' ? 'selected' : '' }}>Rejeter</option>
                             </select>
                         </div>
 
-                        <div class="mb-4">
-                            <x-input-label for="remarque_admin" :value="__('Remarque (obligatoire si rejeté)')" />
-                            <textarea name="remarque_admin" id="remarque_admin" rows="3" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ $demande->remarque_admin }}</textarea>
+                        <div class="form-group">
+                            <div class="label">Remarque (Obligatoire si rejeté)</div>
+                            <textarea name="remarque_admin" rows="4" placeholder="Ajouter une note ou un motif de rejet...">{{ $demande->remarque_admin }}</textarea>
                         </div>
 
-                        <div class="flex items-center justify-end mt-4">
-                            <x-primary-button>
-                                {{ __('Enregistrer') }}
-                            </x-primary-button>
-                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%;">Enregistrer les modifications</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+</body>
+</html>

@@ -89,6 +89,17 @@ class User extends Authenticatable
         return $this->email;
     }
 
+    public function getInitialsAttribute()
+    {
+        if ($this->role === 'etudiant' && $this->etudiant) {
+            return strtoupper(substr($this->etudiant->prenom, 0, 1) . substr($this->etudiant->nom, 0, 1));
+        }
+        if ($this->role === 'admin' && $this->admin) {
+            return strtoupper(substr($this->admin->prenom, 0, 1) . substr($this->admin->nom, 0, 1));
+        }
+        return strtoupper(substr($this->email, 0, 2));
+    }
+
     // Relationships
     public function etudiant()
     {

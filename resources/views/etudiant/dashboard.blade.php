@@ -47,12 +47,30 @@
             text-decoration: none;
         }
 
-        /* Removed old logo styles */
+        /* .logo-icon removed/ignored */
 
-        .header-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
+        .nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #64748b;
+            font-size: 0.9375rem;
+            transition: color 0.2s;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: #1e293b;
+        }
+
+        .nav-link.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            font-weight: 500;
         }
 
         .header-right {
@@ -137,62 +155,6 @@
         .user-info p {
             font-size: 11px;
             color: #999;
-        }
-
-        /* Layout */
-        .layout {
-            display: flex;
-            min-height: calc(100vh - 61px);
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 240px;
-            background: white;
-            border-right: 1px solid #e0e0e0;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 24px;
-            color: #666;
-            text-decoration: none;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-            cursor: pointer;
-        }
-
-        .nav-item:hover {
-            background: #f5f7fa;
-            color: #2196f3;
-        }
-
-        .nav-item.active {
-            background: #e3f2fd;
-            color: #2196f3;
-            border-left-color: #2196f3;
-            font-weight: 500;
-        }
-
-        .nav-item svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        .nav-item-logout {
-            color: #f44336;
-            margin-top: auto;
-            border: none;
-            background: none;
-            width: 100%;
-            font-family: inherit;
-            font-size: inherit;
         }
 
         /* Main Content */
@@ -482,10 +444,15 @@
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <div class="logo">
+            <a href="{{ route('etudiant.dashboard') }}" class="logo">
                 <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
-            </div>
-            <span class="header-title">Tableau de bord</span>
+            </a>
+            <nav class="nav">
+                <a href="{{ route('etudiant.dashboard') }}" class="nav-link {{ request()->routeIs('etudiant.dashboard') ? 'active' : '' }}">Dashboard</a>
+                <a href="{{ route('etudiant.demandes.index') }}" class="nav-link {{ request()->routeIs('etudiant.demandes.*') ? 'active' : '' }}">Demandes</a>
+                <a href="{{ route('etudiant.certificats.create') }}" class="nav-link {{ request()->routeIs('etudiant.certificats.*') ? 'active' : '' }}">Certificats</a>
+                <a href="{{ route('etudiant.profil') }}" class="nav-link {{ request()->routeIs('etudiant.profil') ? 'active' : '' }}">Profil</a>
+            </nav>
         </div>
         <div class="header-right">
             <a href="{{ route('etudiant.notifications.index') }}" class="icon-btn" style="text-decoration: none;">
@@ -496,6 +463,14 @@
                     <span class="notification-badge">{{ $unreadCount }}</span>
                 @endif
             </a>
+            <form method="POST" action="{{ route('logout') }}" style="display: flex; align-items: center;">
+                @csrf
+                <button type="submit" class="icon-btn" title="Déconnexion" style="color: #ef4444;">
+                    <svg viewBox="0 0 24 24" style="fill: currentColor;">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                </button>
+            </form>
             <div class="user-menu" onclick="window.location='{{ route('etudiant.profil') }}'">
                 <div class="user-avatar">{{ $initials }}</div>
                 <div class="user-info">
@@ -506,44 +481,6 @@
         </div>
     </header>
 
-    <div class="layout">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <a href="{{ route('etudiant.dashboard') }}" class="nav-item active">
-                <svg viewBox="0 0 24 24">
-                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                </svg>
-                <span>Accueil</span>
-            </a>
-            <a href="{{ route('etudiant.demandes.index') }}" class="nav-item">
-                <svg viewBox="0 0 24 24">
-                    <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-                </svg>
-                <span>Mes Demandes</span>
-            </a>
-            <a href="{{ route('etudiant.certificats.create') }}" class="nav-item">
-                <svg viewBox="0 0 24 24">
-                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                </svg>
-                <span>Certificat Médical</span>
-            </a>
-            <a href="{{ route('etudiant.notifications.index') }}" class="nav-item">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                </svg>
-                <span>Notifications</span>
-            </a>
-            
-            <form method="POST" action="{{ route('logout') }}" id="logout-form" style="margin-top:auto">
-                @csrf
-                <button type="submit" class="nav-item nav-item-logout">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-                    </svg>
-                    <span>Déconnexion</span>
-                </button>
-            </form>
-        </aside>
 
         <!-- Main Content -->
         <main class="main-content">

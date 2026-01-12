@@ -17,21 +17,23 @@
             color: #1e293b;
         }
 
-        /* Header */
+        /* Header Standard */
         .header {
             background-color: white;
-            border-bottom: 3px solid #3b82f6;
-            padding: 0.75rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 3rem;
         }
 
         .logo {
@@ -39,50 +41,68 @@
             align-items: center;
             gap: 0;
             font-weight: 700;
-            font-size: 1.125rem;
+            font-size: 1.25rem;
+            color: #1e293b;
             text-decoration: none;
         }
 
-        /* .logo-icon removed/ignored */
-
         .nav {
             display: flex;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
-/* ... existing nav styles ... */
+        .nav-link {
+            text-decoration: none;
+            color: #64748b;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid transparent;
+        }
 
-        .nav a:hover {
+        .nav-link:hover {
             color: #1e293b;
         }
 
-        .nav a.active {
-            color: #3b82f6;
-            font-weight: 500;
+        .nav-link.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 2rem;
         }
 
-        .header-btn {
-            background: none;
-            border: none;
-            color: #64748b;
-            font-size: 0.9375rem;
-            cursor: pointer;
+        .user-menu {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            transition: color 0.2s;
-            text-decoration: none;
+            color: #64748b;
         }
 
-        .header-btn:hover {
-            color: #1e293b;
+        .user-icon {
+            color: #4c1d95;
+            display: flex;
+            align-items: center;
         }
+
+        .logout-btn {
+            color: #ef4444;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+        }
+
 
         /* Main Container */
         .container {
@@ -375,29 +395,34 @@
 </head>
 <body>
     <!-- Header -->
+    <!-- Header -->
     <header class="header">
         <div class="header-left">
             <a href="{{ route('admin.dashboard') }}" class="logo">
                 <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
             </a>
             <nav class="nav">
-                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
-                <a href="{{ route('admin.document-types.index') }}" class="{{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}">Documents</a>
-                <a href="{{ route('admin.etudiants.import') }}" class="{{ request()->routeIs('admin.etudiants.import') ? 'active' : '' }}">Importer Etudiants</a>
-                <a href="{{ route('admin.certificats.index') }}" class="{{ request()->routeIs('admin.certificats.*') ? 'active' : '' }}">Certificats Médicaux</a>
-                <a href="{{ route('admin.demandes.index') }}" class="{{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}">Gestion des Demandes</a>
+                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
+                <a href="{{ route('admin.document-types.index') }}" class="nav-link {{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}">Documents</a>
+                <a href="{{ route('admin.etudiants.import') }}" class="nav-link {{ request()->routeIs('admin.etudiants.import') ? 'active' : '' }}">Importation</a>
+                <a href="{{ route('admin.certificats.index') }}" class="nav-link {{ request()->routeIs('admin.certificats.*') ? 'active' : '' }}">Certificats</a>
+                <a href="{{ route('admin.demandes.index') }}" class="nav-link {{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}">Demandes</a>
             </nav>
         </div>
         <div class="header-right">
-            <div class="header-btn">
-                <span>👤</span>
-                <span>{{ Auth::user()->nom ?? 'Admin' }}</span>
+            <div class="user-menu">
+                <div class="user-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>
+                <span>Admin</span>
             </div>
-            <form method="POST" action="{{ route('logout') }}">
+            
+            <form method="POST" action="{{ route('logout') }}" style="margin: 0; display: flex;">
                 @csrf
-                <button type="submit" class="header-btn">
-                    <span>🚪</span>
-                    <span>Déconnexion</span>
+                <button type="submit" class="logout-btn">
+                    Déconnexion
                 </button>
             </form>
         </div>

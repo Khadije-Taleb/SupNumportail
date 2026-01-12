@@ -22,14 +22,21 @@
         /* Header */
         .header {
             background: white;
-            padding: 16px 40px;
+            border-bottom: 3px solid #2196f3;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .logo {
@@ -40,25 +47,211 @@
             font-weight: 700;
             text-decoration: none;
         }
-        /* .logo-icon removed */
 
-        .logo-icon {
-            width: 24px;
-            height: 24px;
-            background: #2196f3;
-            border-radius: 4px;
+        .nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #64748b;
+            font-size: 0.9375rem;
+            transition: color 0.2s;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: #1e293b;
+        }
+
+        .nav-link.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #f5f7fa;
+            border: none;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transform: rotate(45deg);
+            transition: all 0.2s;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
         }
 
-        .logo-icon-inner {
-            width: 12px;
-            height: 12px;
-            background: white;
-            border-radius: 2px;
-            transform: rotate(-45deg);
+        .icon-btn:hover {
+            background: #e8eaf6;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #666;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #f44336;
+            color: white;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 4px;
+            border-radius: 9px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #f5f7fa;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-info p {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            font-size: 1.125rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #f5f7fa;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .icon-btn:hover {
+            background: #e8eaf6;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #666;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #f44336;
+            color: white;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 4px;
+            border-radius: 9px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #f5f7fa;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-info p {
+            font-size: 11px;
+            color: #999;
         }
 
         .nav {
@@ -370,16 +563,44 @@
 </head>
 <body>
     <!-- Header -->
+    <!-- Header -->
     <header class="header">
-        <a href="{{ route('etudiant.dashboard') }}" class="logo">
-            <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
-        </a>
-        <nav class="nav">
-            <a href="{{ route('etudiant.dashboard') }}" class="nav-link">Dashboard</a>
-            <a href="{{ route('etudiant.demandes.index') }}" class="nav-link">Demandes</a>
-            <a href="{{ route('etudiant.certificats.index') }}" class="nav-link">Certificats</a>
-            <a href="{{ route('etudiant.profil') }}" class="nav-link">Profil</a>
-        </nav>
+        <div class="header-left">
+            <a href="{{ route('etudiant.dashboard') }}" class="logo">
+                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
+            </a>
+            <nav class="nav">
+                <a href="{{ route('etudiant.dashboard') }}" class="nav-link {{ request()->routeIs('etudiant.dashboard') ? 'active' : '' }}">Dashboard</a>
+                <a href="{{ route('etudiant.demandes.index') }}" class="nav-link {{ request()->routeIs('etudiant.demandes.*') ? 'active' : '' }}">Demandes</a>
+                <a href="{{ route('etudiant.certificats.create') }}" class="nav-link {{ request()->routeIs('etudiant.certificats.*') ? 'active' : '' }}">Certificats</a>
+                <a href="{{ route('etudiant.profil') }}" class="nav-link {{ request()->routeIs('etudiant.profil') ? 'active' : '' }}">Profil</a>
+            </nav>
+        </div>
+        <div class="header-right">
+             <a href="{{ route('etudiant.notifications.index') }}" class="icon-btn" style="text-decoration: none;">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                </svg>
+                @if(isset($unreadCount) && $unreadCount > 0)
+                    <span class="notification-badge">{{ $unreadCount }}</span>
+                @endif
+            </a>
+            <form method="POST" action="{{ route('logout') }}" style="display: flex; align-items: center;">
+                @csrf
+                <button type="submit" class="icon-btn" title="Déconnexion" style="color: #ef4444;">
+                    <svg viewBox="0 0 24 24" style="fill: currentColor;">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                </button>
+            </form>
+            <div class="user-menu" onclick="window.location='{{ route('etudiant.profil') }}'">
+                <div class="user-avatar">{{ Auth::user()->initials }}</div>
+                <div class="user-info">
+                    <h3>{{ Auth::user()->full_name }}</h3>
+                    <p>Étudiant {{ Auth::user()->etudiant->annee ?? '' }}</p>
+                </div>
+            </div>
+        </div>
     </header>
 
     <!-- Main Content -->
@@ -441,17 +662,6 @@
             </div>
 
             <!-- Sidebar -->
-            <aside class="sidebar">
-                <div class="sidebar-card">
-                    <h3 class="sidebar-title">Actions rapides</h3>
-                    <a href="#" class="sidebar-action" onclick="markAllAsRead(); return false;">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
-                        </svg>
-                        <span>Tout marquer comme lu</span>
-                    </a>
-                </div>
-            </aside>
         </div>
     </div>
 
