@@ -19,13 +19,16 @@ class DemandeController extends Controller
 
         $demandes = $user->etudiant->demandes()->with('document')->latest('created_at')->paginate(10);
         $documents = Document::where('actif', true)->get();
-        return view('etudiant.mes_demandes', compact('demandes', 'documents'));
+        $etudiant = $user->etudiant;
+        return view('etudiant.mes_demandes', compact('demandes', 'documents', 'user', 'etudiant'));
     }
 
     public function create()
     {
+        $user = Auth::user();
+        $etudiant = $user->etudiant;
         $documents = Document::where('actif', true)->get();
-        return view('etudiant.nouvelle_demande', compact('documents'));
+        return view('etudiant.nouvelle_demande', compact('documents', 'user', 'etudiant'));
     }
 
     public function store(Request $request)
@@ -50,11 +53,20 @@ class DemandeController extends Controller
             $path = $request->file('justificatif')->store('justificatifs', 'public');
         }
 
-        Demande::create([
+        $demande = Demande::create([
             'matricule_etudiant' => $user->etudiant->matricule,
             'document_id' => $request->document_id,
             'statut' => 'en_attente',
         ]);
+
+        // Notify Admin
+        \App\Http\Controllers\NotificationController::storeForAdmin(
+            "Nouvelle demande de document",
+            "Une nouvelle demande de " . $demande->document->type_document . " a été envoyée par l'étudiant " . $user->full_name,
+            "demande",
+            $user->etudiant->matricule,
+            route('admin.demandes.show', $demande->id)
+        );
 
         return redirect()->route('etudiant.demandes.index')->with('success', 'Votre demande a été enregistrée avec succès.');
     }
@@ -95,12 +107,14 @@ class DemandeController extends Controller
                 $message .= " Remarque : " . $request->remarque_admin;
             }
 
-            \App\Models\Notification::create([
-                'id_utilisateur' => $demande->etudiant->utilisateur->id,
-                'matricule_etudiant' => $demande->etudiant->matricule,
-                'message' => "Demande administrative traitée : " . $message,
-                'lu' => false,
-            ]);
+            \App\Http\Controllers\NotificationController::storeForStudent(
+                $demande->etudiant->utilisateur->id,
+                "Demande administrative traitée",
+                $message,
+                "demande",
+                $demande->etudiant->matricule,
+                route('etudiant.demandes.index')
+            );
         }
 
         return redirect()->route('admin.dashboard')->with('success', 'La demande a été traitée avec succès.');

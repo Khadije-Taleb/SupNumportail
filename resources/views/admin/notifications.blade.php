@@ -1,402 +1,244 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Notifications Admin - SupNumPortail</title>
-    <style>
-        /* [Same CSS as student version] */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@extends('layouts.admin')
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #f8f9fa;
-            color: #333;
-            min-height: 100vh;
-        }
+@section('title', 'Notifications Admin')
 
-        /* Header Standard */
-        .header {
-            background-color: white;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 0 2rem;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+@section('styles')
+<style>
+    /* Container */
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 48px 20px;
+    }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-        }
+    /* Page Header */
+    .page-header {
+        margin-bottom: 40px;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: #1e293b;
-            text-decoration: none;
-        }
+    .page-header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+    }
 
-        .nav {
-            display: flex;
-            gap: 2rem;
-        }
+    .page-header p {
+        color: #666;
+        font-size: 15px;
+    }
 
-        .nav-link {
-            text-decoration: none;
-            color: #64748b;
-            font-size: 0.9375rem;
-            font-weight: 500;
-            transition: color 0.2s;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            border-bottom: 2px solid transparent;
-            padding: 0;
-        }
+    /* Notifications List */
+    .notifications-container {
+        display: flex;
+        gap: 24px;
+    }
 
-        .nav-link:hover {
-            color: #1e293b;
-        }
+    .notifications-list {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
 
-        .nav-link.active {
-            color: #2563eb;
-            border-bottom-color: #2563eb;
-        }
+    /* Notification Item */
+    .notification-item {
+        background: white;
+        border-radius: 12px;
+        padding: 20px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        display: flex;
+        gap: 16px;
+        transition: all 0.2s;
+        cursor: pointer;
+        position: relative;
+    }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
+    .notification-item:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
 
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #64748b;
-        }
+    .notification-item.unread {
+        border-left: 4px solid #4caf50;
+        padding-left: 20px;
+    }
 
-        .user-icon {
-            color: #4c1d95;
-            display: flex;
-            align-items: center;
-        }
+    .notification-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-top: 2px;
+        cursor: pointer;
+        accent-color: #4caf50;
+    }
 
-        .logout-btn {
-            color: #ef4444;
-            font-weight: 600;
-            font-size: 0.9375rem;
-            text-decoration: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            font-family: inherit;
-        }
+    .notification-content {
+        flex: 1;
+    }
 
-        /* Container */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 48px 20px;
-        }
+    .notification-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+    }
 
-        /* Page Header */
-        .page-header {
-            margin-bottom: 40px;
-        }
+    .notification-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
 
-        .page-header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
+    .badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-        .page-header p {
-            color: #666;
-            font-size: 15px;
-        }
+    .badge.nouveau {
+        background: #4caf50;
+        color: white;
+    }
 
-        /* Notifications List */
+    .notification-date {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 8px;
+    }
+
+    .notification-text {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .notification-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #4caf50;
+        flex-shrink: 0;
+        margin-top: 6px;
+    }
+
+    .notification-item.read .notification-indicator {
+        background: transparent;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 240px;
+        flex-shrink: 0;
+    }
+
+    .sidebar-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        position: sticky;
+        top: 100px;
+    }
+
+    .sidebar-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 16px;
+    }
+
+    .sidebar-action {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: #f5f7fa;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #666;
+        text-decoration: none;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .sidebar-action:hover {
+        background: #e8f5e9;
+        color: #4caf50;
+    }
+
+    .sidebar-action svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .empty-state svg {
+        width: 80px;
+        height: 80px;
+        fill: #ccc;
+        margin-bottom: 24px;
+    }
+
+    .empty-state h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #999;
+        font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
         .notifications-container {
-            display: flex;
-            gap: 24px;
-        }
-
-        .notifications-list {
-            flex: 1;
-            display: flex;
             flex-direction: column;
-            gap: 16px;
         }
 
-        /* Notification Item */
-        .notification-item {
-            background: white;
-            border-radius: 12px;
-            padding: 20px 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            display: flex;
-            gap: 16px;
-            transition: all 0.2s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .notification-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-
-        .notification-item.unread {
-            border-left: 4px solid #4caf50;
-            padding-left: 20px;
-        }
-
-        .notification-checkbox {
-            width: 20px;
-            height: 20px;
-            margin-top: 2px;
-            cursor: pointer;
-            accent-color: #4caf50;
-        }
-
-        .notification-content {
-            flex: 1;
-        }
-
-        .notification-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 6px;
-        }
-
-        .notification-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        .badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .badge.nouveau {
-            background: #4caf50;
-            color: white;
-        }
-
-        .notification-date {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 8px;
-        }
-
-        .notification-text {
-            font-size: 14px;
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .notification-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #4caf50;
-            flex-shrink: 0;
-            margin-top: 6px;
-        }
-
-        .notification-item.read .notification-indicator {
-            background: transparent;
-        }
-
-        /* Sidebar */
         .sidebar {
-            width: 240px;
-            flex-shrink: 0;
+            width: 100%;
         }
 
         .sidebar-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            position: sticky;
-            top: 100px;
+            position: static;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 32px 16px;
         }
 
-        .sidebar-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 16px;
+        .page-header h1 {
+            font-size: 24px;
         }
 
-        .sidebar-action {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            background: #f5f7fa;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #666;
-            text-decoration: none;
-            transition: all 0.2s;
-            cursor: pointer;
+        .notification-item {
+            padding: 16px;
         }
 
-        .sidebar-action:hover {
-            background: #e8f5e9;
-            color: #4caf50;
+        .notification-item.unread {
+            padding-left: 12px;
         }
+    }
+</style>
+@endsection
 
-        .sidebar-action svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 40px 20px;
-            color: #999;
-            font-size: 12px;
-            margin-top: 48px;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .empty-state svg {
-            width: 80px;
-            height: 80px;
-            fill: #ccc;
-            margin-bottom: 24px;
-        }
-
-        .empty-state h3 {
-            font-size: 20px;
-            font-weight: 600;
-            color: #666;
-            margin-bottom: 8px;
-        }
-
-        .empty-state p {
-            color: #999;
-            font-size: 14px;
-        }
-
-        /* Responsive */
-        @media (max-width: 968px) {
-            .notifications-container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-            }
-
-            .sidebar-card {
-                position: static;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                padding: 16px 20px;
-            }
-
-            .nav {
-                display: none;
-            }
-
-            .container {
-                padding: 32px 16px;
-            }
-
-            .page-header h1 {
-                font-size: 24px;
-            }
-
-            .notification-item {
-                padding: 16px;
-            }
-
-            .notification-item.unread {
-                padding-left: 12px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <a href="{{ route('admin.dashboard') }}" class="logo">
-                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
-            </a>
-            <nav class="nav">
-                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
-                <a href="{{ route('admin.document-types.index') }}" class="nav-link {{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}">Documents</a>
-                <a href="{{ route('admin.etudiants.import') }}" class="nav-link {{ request()->routeIs('admin.etudiants.import') ? 'active' : '' }}">Importation</a>
-                <a href="{{ route('admin.certificats.index') }}" class="nav-link {{ request()->routeIs('admin.certificats.*') ? 'active' : '' }}">Certificats</a>
-                <a href="{{ route('admin.demandes.index') }}" class="nav-link {{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}">Demandes</a>
-            </nav>
-        </div>
-        <div class="header-right">
-            <div class="user-menu">
-                <div class="user-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                </div>
-                <span>Admin</span>
-            </div>
-            
-            <form method="POST" action="{{ route('logout') }}" style="margin: 0; display: flex;">
-                @csrf
-                <button type="submit" class="logout-btn">
-                    Déconnexion
-                </button>
-            </form>
-        </div>
-    </header>
-
-    <!-- Main Content -->
+@section('content')
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">
@@ -408,22 +250,17 @@
             <!-- Notifications List -->
             <div class="notifications-list">
                 @forelse($notifications as $notification)
-                <div class="notification-item {{ $notification->lu ? 'read' : 'unread' }}" 
-                     data-id="{{ $notification->id }}">
+                <div class="notification-item {{ $notification->is_read ? 'read' : 'unread' }}" 
+                     data-id="{{ $notification->id }}"
+                     data-link="{{ $notification->link }}">
                     <input type="checkbox" class="notification-checkbox" 
                            data-id="{{ $notification->id }}">
                     <div class="notification-content">
                         <div class="notification-header">
                             <span class="notification-title">
-                                @if(str_contains(strtolower($notification->message), 'certificat'))
-                                    Alerte Certificat Médical
-                                @elseif(str_contains(strtolower($notification->message), 'demande'))
-                                    Alerte Nouvelle Demande
-                                @else
-                                    Alerte Système
-                                @endif
+                                {{ $notification->title ?? 'Alerte Système' }}
                             </span>
-                            @if(!$notification->lu)
+                            @if(!$notification->is_read)
                                 <span class="badge nouveau">Nouveau</span>
                             @endif
                         </div>
@@ -434,7 +271,7 @@
                             {{ $notification->message }}
                         </div>
                     </div>
-                    @if(!$notification->lu)
+                    @if(!$notification->is_read)
                         <div class="notification-indicator"></div>
                     @endif
                 </div>
@@ -468,133 +305,98 @@
             </aside>
         </div>
     </div>
+@endsection
 
-    <!-- Footer -->
-    <footer class="footer">
-        © {{ date('Y') }} SupNumPortail Admin - Tous droits réservés.
-    </footer>
-
-    <script>
-        // Mark notification as read when clicked
-        document.querySelectorAll('.notification-item.unread').forEach(item => {
-            item.addEventListener('click', function(e) {
-                if (e.target.type !== 'checkbox') {
-                    const notificationId = this.dataset.id;
-                    markAsRead(notificationId, this);
+@push('scripts')
+<script>
+    // Mark notification as read when clicked
+    document.querySelectorAll('.notification-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (e.target.type !== 'checkbox') {
+                const notificationId = this.dataset.id;
+                const link = this.dataset.link;
+                
+                if (this.classList.contains('unread')) {
+                    markAsRead(notificationId, this, link);
+                } else if (link) {
+                    window.location.href = link;
                 }
-            });
-        });
-
-        // Mark individual notification as read
-        function markAsRead(id, element) {
-            if (!id) {
-                console.error('Notification ID is missing');
-                alert('Erreur: ID de notification manquant.');
-                return;
             }
+        });
+    });
 
-            console.log('Marking notification as read:', id);
-            
-            fetch(`/admin/notifications/${id}/read`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin'
-            })
-            .then(async response => {
-                console.log('Response status:', response.status);
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Error response:', errorText);
-                    let errorData;
-                    try {
-                        errorData = JSON.parse(errorText);
-                    } catch (e) {
-                        errorData = { message: 'Erreur serveur: ' + response.status + ' - ' + errorText.substring(0, 100) };
+    // Mark individual notification as read
+    function markAsRead(id, element, link = null) {
+        if (!id) return;
+        
+        fetch(`/admin/notifications/${id}/read`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                element.classList.remove('unread');
+                element.classList.add('read');
+                const indicator = element.querySelector('.notification-indicator');
+                if (indicator) indicator.remove();
+                const badge = element.querySelector('.badge.nouveau');
+                if (badge) badge.remove();
+
+                // Update the badge in the header
+                const mainBadge = document.querySelector('.notification-badge');
+                if (mainBadge) {
+                    let count = parseInt(mainBadge.textContent);
+                    count = Math.max(0, count - 1);
+                    if (count > 0) {
+                        mainBadge.textContent = count;
+                    } else {
+                        mainBadge.remove();
                     }
-                    throw new Error(errorData.message || 'Network response was not ok');
                 }
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    return response.json();
-                } else {
-                    throw new Error('Réponse serveur invalide');
+
+                if (link) {
+                    window.location.href = link;
                 }
-            })
-            .then(data => {
-                console.log('Success response:', data);
-                if (data.success) {
-                    element.classList.remove('unread');
-                    element.classList.add('read');
-                    const indicator = element.querySelector('.notification-indicator');
+            }
+        });
+    }
+
+    // Mark all notifications as read
+    function markAllAsRead() {
+        if (!confirm('Voulez-vous marquer toutes les notifications comme lues ?')) return;
+
+        fetch('/admin/notifications/mark-all-read', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.querySelectorAll('.notification-item.unread').forEach(item => {
+                    item.classList.remove('unread');
+                    item.classList.add('read');
+                    const indicator = item.querySelector('.notification-indicator');
                     if (indicator) indicator.remove();
-                    const badge = element.querySelector('.badge.nouveau');
+                    const badge = item.querySelector('.badge.nouveau');
                     if (badge) badge.remove();
-                } else {
-                    console.error('Error marking notification as read:', data.message || 'Unknown error');
-                    alert(data.message || 'Erreur lors de la mise à jour de la notification.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Erreur lors de la communication avec le serveur: ' + error.message);
-            });
-        }
+                });
 
-        // Mark all notifications as read
-        function markAllAsRead() {
-            fetch('/admin/notifications/mark-all-read', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(async response => {
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    let errorData;
-                    try {
-                        errorData = JSON.parse(errorText);
-                    } catch (e) {
-                        errorData = { message: 'Erreur serveur: ' + response.status };
-                    }
-                    throw new Error(errorData.message || 'Network response was not ok');
-                }
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    return response.json();
-                } else {
-                    throw new Error('Réponse serveur invalide');
-                }
-            })
-            .then(data => {
-                if (data.success) {
-                    document.querySelectorAll('.notification-item.unread').forEach(item => {
-                        item.classList.remove('unread');
-                        item.classList.add('read');
-                        const indicator = item.querySelector('.notification-indicator');
-                        if (indicator) indicator.remove();
-                        const badge = item.querySelector('.badge.nouveau');
-                        if (badge) badge.remove();
-                    });
-                    alert(data.message || 'Toutes les notifications ont été marquées comme lues.');
-                } else {
-                    console.error('Error marking all notifications as read:', data.message || 'Unknown error');
-                    alert(data.message || 'Erreur lors de la mise à jour des notifications.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Erreur lors de la communication avec le serveur. Veuillez réessayer.');
-            });
-        }
-    </script>
-</body>
-</html>
+                // Remove the badge in the header
+                const mainBadge = document.querySelector('.notification-badge');
+                if (mainBadge) mainBadge.remove();
+            }
+        });
+    }
+</script>
+@endpush

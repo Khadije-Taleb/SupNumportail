@@ -19,11 +19,15 @@ class Notification extends Model
         'id_utilisateur',
         'matricule_etudiant',
         'message',
-        'lu',
+        'is_read',
+        'role',
+        'title',
+        'type',
+        'link',
     ];
 
     protected $casts = [
-        'lu' => 'boolean',
+        'is_read' => 'boolean',
     ];
 
     public function etudiant()

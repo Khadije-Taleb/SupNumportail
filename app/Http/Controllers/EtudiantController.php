@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use App\Models\Demande;
 use App\Models\CertificatMedical;
 use App\Models\Notification;
@@ -22,22 +24,45 @@ class EtudiantController extends Controller
             'rejetees' => $etudiant ? $etudiant->demandes()->where('statut', 'rejetee')->count() : 0,
         ];
 
-        $notifications = $user->getAllNotifications()->latest('created_at')->take(5)->get();
-        $unreadCount = $user->notifications()->where('lu', false)->count();
-
-        return view('etudiant.dashboard', compact('user', 'etudiant', 'stats', 'notifications', 'unreadCount'));
+        $notifications = $user->notifications()->where('role', 'etudiant')->latest('created_at')->take(5)->get();
+        return view('etudiant.dashboard', compact('user', 'etudiant', 'stats', 'notifications'));
     }
 
     public function notifications()
     {
         $user = Auth::user();
-        $notifications = $user->getAllNotifications()->latest('created_at')->paginate(10);
-        return view('etudiant.notifications', compact('notifications'));
+        $etudiant = $user->etudiant;
+        $notifications = $user->notifications()->where('role', 'etudiant')->latest('created_at')->paginate(10);
+        return view('etudiant.notifications', compact('notifications', 'user', 'etudiant'));
     }
 
     public function profil()
     {
         $user = Auth::user();
-        return view('etudiant.profil', compact('user'));
+        $etudiant = $user->etudiant;
+        return view('etudiant.profil', compact('user', 'etudiant'));
+    }
+
+    public function editPassword()
+    {
+        $user = Auth::user();
+        $etudiant = $user->etudiant;
+        return view('etudiant.password-edit', compact('user', 'etudiant'));
+    }
+
+    public function updatePassword(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $user = Auth::user();
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('etudiant.profil')->with('success', 'Votre mot de passe a été mis à jour avec succès.');
     }
 }

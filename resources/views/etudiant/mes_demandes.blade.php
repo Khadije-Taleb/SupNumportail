@@ -42,9 +42,17 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0;
+            gap: 0.75rem;
             font-size: 1.125rem;
             font-weight: 700;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+            background: transparent;
+            display: block;
+        }
             text-decoration: none;
         }
 
@@ -159,9 +167,17 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0;
+            gap: 0.75rem;
             font-size: 1.125rem;
             font-weight: 700;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+            background: transparent;
+            display: block;
+        }
             color: #1a1a1a;
             text-decoration: none;
         }
@@ -668,6 +684,7 @@
     <header class="header">
         <div class="header-left">
             <a href="{{ route('etudiant.dashboard') }}" class="logo">
+                <img src="{{ asset('images/logo.png') }}" alt="SupNum logo">
                 <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
             </a>
             <nav class="nav">
@@ -698,7 +715,7 @@
                 <div class="user-avatar">{{ Auth::user()->initials }}</div>
                 <div class="user-info">
                     <h3>{{ Auth::user()->full_name }}</h3>
-                    <p>Étudiant {{ Auth::user()->etudiant->annee ?? '' }}</p>
+                    <p>Étudiant {{ Auth::user()->etudiant?->annee ?? '' }}</p>
                 </div>
             </div>
         </div>

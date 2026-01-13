@@ -41,10 +41,17 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0;
+            gap: 0.75rem;
             font-size: 1.125rem;
             font-weight: 700;
             text-decoration: none;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+            background: transparent;
+            display: block;
         }
 
         /* .logo-icon removed/ignored */
@@ -445,6 +452,7 @@
     <header class="header">
         <div class="header-left">
             <a href="{{ route('etudiant.dashboard') }}" class="logo">
+                <img src="{{ asset('images/logo.png') }}" alt="SupNum logo">
                 <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
             </a>
             <nav class="nav">
@@ -475,7 +483,7 @@
                 <div class="user-avatar">{{ $initials }}</div>
                 <div class="user-info">
                     <h3>{{ $user->full_name }}</h3>
-                    <p>Étudiant {{ $etudiant->annee ?? '' }}</p>
+                    <p>Étudiant {{ $etudiant?->annee ?? '' }}</p>
                 </div>
             </div>
         </div>
@@ -506,15 +514,15 @@
                 </div>
                 <div class="info-card">
                     <div class="info-card-label">Matricule</div>
-                    <div class="info-card-value">{{ $etudiant->matricule ?? 'N/A' }}</div>
+                    <div class="info-card-value">{{ $etudiant?->matricule ?? 'N/A' }}</div>
                 </div>
                 <div class="info-card">
                     <div class="info-card-label">Filière</div>
-                    <div class="info-card-value">{{ $etudiant->filiere ?? 'N/A' }}</div>
+                    <div class="info-card-value">{{ $etudiant?->filiere ?? 'N/A' }}</div>
                 </div>
                 <div class="info-card">
                     <div class="info-card-label">Année Académique</div>
-                    <div class="info-card-value">{{ $etudiant->annee ?? 'N/A' }}</div>
+                    <div class="info-card-value">{{ $etudiant?->annee ?? 'N/A' }}</div>
                 </div>
                 <div class="info-card">
                     <div class="info-card-label">Email Institutionnel</div>
@@ -571,14 +579,16 @@
                 </div>
                 <div class="notification-list">
                     @forelse($notifications as $notification)
-                        <div class="notification-item">
-                            <div class="notification-icon {{ $notification->lu ? 'info' : 'warning' }}">
+                        <div class="notification-item {{ !$notification->is_read ? 'unread' : '' }}" 
+                             onclick="handleNotificationClick(this, {{ $notification->id }}, '{{ $notification->link }}')"
+                             style="border-left: {{ !$notification->is_read ? '4px solid #ff9800' : 'none' }};">
+                            <div class="notification-icon {{ $notification->is_read ? 'info' : 'warning' }}">
                                 <svg viewBox="0 0 24 24">
                                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                                 </svg>
                             </div>
                             <div class="notification-content">
-                                <h5>Notification</h5>
+                                <h5>{{ $notification->title ?? 'Notification' }}</h5>
                                 <p>{{ $notification->message }}</p>
                                 <div class="notification-time">{{ $notification->created_at ? $notification->created_at->diffForHumans() : '' }}</div>
                             </div>
@@ -590,6 +600,48 @@
             </div>
         </main>
     </div>
+
+    <script>
+        function handleNotificationClick(element, id, link = '') {
+            if (element.classList.contains('unread')) {
+                markAsRead(element, id, link);
+            } else if (link && link !== 'null') {
+                window.location.href = link;
+            }
+        }
+
+        function markAsRead(element, id, link = '') {
+            fetch(`/etudiant/notifications/${id}/read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    element.classList.remove('unread');
+                    element.style.borderLeft = 'none';
+                    
+                    // Update the badge in the header
+                    const badge = document.querySelector('.notification-badge');
+                    if (badge) {
+                        let count = parseInt(badge.textContent);
+                        count = Math.max(0, count - 1);
+                        if (count > 0) {
+                            badge.textContent = count;
+                        } else {
+                            badge.remove();
+                        }
+                    }
+
+                    if (link && link !== 'null') {
+                        window.location.href = link;
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
 

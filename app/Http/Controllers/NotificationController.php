@@ -15,11 +15,53 @@ class NotificationController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $notifications = $user->notifications()->latest('created_at')->paginate(10);
+        $role = strtolower($user->role);
         
-        $view = strtolower($user->role) === 'admin' ? 'admin.notifications' : 'etudiant.notifications';
+        $notifications = Notification::where('id_utilisateur', $user->id)
+            ->where('role', $role)
+            ->latest('created_at')
+            ->paginate(10);
+        
+        $view = $role === 'admin' ? 'admin.notifications' : 'etudiant.notifications';
         
         return view($view, compact('notifications'));
+    }
+
+    /**
+     * Helper to store notification for all admins.
+     */
+    public static function storeForAdmin($title, $message, $type, $student_matricule = null, $link = null)
+    {
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            Notification::create([
+                'id_utilisateur' => $admin->id,
+                'role' => 'admin',
+                'title' => $title,
+                'message' => $message,
+                'type' => $type,
+                'matricule_etudiant' => $student_matricule,
+                'link' => $link,
+                'is_read' => false,
+            ]);
+        }
+    }
+
+    /**
+     * Helper to store notification for a specific student.
+     */
+    public static function storeForStudent($userId, $title, $message, $type, $student_matricule = null, $link = null)
+    {
+        Notification::create([
+            'id_utilisateur' => $userId,
+            'role' => 'etudiant',
+            'title' => $title,
+            'message' => $message,
+            'type' => $type,
+            'matricule_etudiant' => $student_matricule,
+            'link' => $link,
+            'is_read' => false,
+        ]);
     }
 
     /**
@@ -33,7 +75,7 @@ class NotificationController extends Controller
             // Find notification that belongs to the authenticated user
             $notification = $user->notifications()->findOrFail($notificationId);
 
-            $notification->update(['lu' => true]);
+            $notification->update(['is_read' => true]);
 
             if ($request->ajax() || $request->expectsJson() || $request->wantsJson()) {
                 return response()->json(['success' => true, 'message' => 'Notification marquée comme lue.']);
@@ -61,7 +103,7 @@ class NotificationController extends Controller
     public function markAllRead(Request $request)
     {
         try {
-            Auth::user()->notifications()->where('lu', false)->update(['lu' => true]);
+            Auth::user()->notifications()->where('is_read', false)->update(['is_read' => true]);
 
             if ($request->ajax() || $request->expectsJson() || $request->wantsJson()) {
                 return response()->json(['success' => true, 'message' => 'Toutes les notifications ont été marquées comme lues.']);

@@ -49,7 +49,7 @@ class AdminController extends Controller
         $documents = \App\Models\Document::all();
 
         return view('admin.dashboard', [
-            'demandes' => $items, // Re-using variable name for simplicity in view or renaming later
+            'demandes' => $items, 
             'stats' => $stats,
             'documents' => $documents,
             'is_certificat' => ($type === 'certificat')

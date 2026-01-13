@@ -21,7 +21,8 @@ class CertificatMedicalController extends Controller
         // Load available evaluations for the form
         $evaluations = \App\Models\Evaluation::orderBy('nom_matiere')->orderBy('type_evaluation')->get();
 
-        return view('etudiant.certificat_medical', compact('certificats', 'evaluations'));
+        $etudiant = $user->etudiant;
+        return view('etudiant.certificat_medical', compact('certificats', 'evaluations', 'user', 'etudiant'));
     }
 
     public function create()
@@ -54,7 +55,7 @@ class CertificatMedicalController extends Controller
 
         $path = $request->file('fichier')->store('certificats', 'public');
 
-        CertificatMedical::create([
+        $certificat = CertificatMedical::create([
             'matricule_etudiant' => $user->etudiant->matricule,
             'annee' => $request->annee,
             'evaluation_id' => $evaluation->id,
@@ -64,6 +65,15 @@ class CertificatMedicalController extends Controller
             'admin_id' => null,
             'remarque_admin' => null,
         ]);
+
+        // Notify Admin
+        \App\Http\Controllers\NotificationController::storeForAdmin(
+            "Nouveau certificat médical",
+            "Un nouveau certificat médical pour la matière " . $request->nom_matiere . " a été envoyé par l'étudiant " . $user->full_name,
+            "certificat",
+            $user->etudiant->matricule,
+            route('admin.certificats.show', $certificat->id)
+        );
 
         return back()->with('success', 'Certificat médical déposé avec succès.');
     }
@@ -145,17 +155,19 @@ class CertificatMedicalController extends Controller
         // Notification Logic
         if ($certificat->etudiant && $certificat->etudiant->utilisateur) {
             $statusLabel = $request->statut === 'VALIDE' ? 'accepté' : 'rejeté';
-            $message = "Votre certificat médical a été {$statusLabel}.";
+            $message = "Votre certificat médical pour la matière " . ($certificat->evaluation->nom_matiere ?? '') . " a été {$statusLabel}.";
             if ($request->remarque_admin) {
-                $message .= " Remarque de l'administration : " . $request->remarque_admin;
+                $message .= " Remarque : " . $request->remarque_admin;
             }
 
-            \App\Models\Notification::create([
-                'id_utilisateur' => $certificat->etudiant->utilisateur->id,
-                'matricule_etudiant' => $certificat->etudiant->matricule,
-                'message' => "Certificat médical traité : " . $message,
-                'lu' => false,
-            ]);
+            \App\Http\Controllers\NotificationController::storeForStudent(
+                $certificat->etudiant->utilisateur->id,
+                "Mise à jour de votre certificat",
+                $message,
+                "certificat",
+                $certificat->etudiant->matricule,
+                route('etudiant.certificats.index')
+            );
         }
 
         return redirect()->route('admin.certificats.index')->with('success', 'Le certificat a été traité avec succès.');

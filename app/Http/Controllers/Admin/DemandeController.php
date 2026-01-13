@@ -69,27 +69,22 @@ class DemandeController extends Controller
             'admin_id' => $admin->id,
         ]);
 
-        // Notifications
+        // Notification Logic
         if ($demande->etudiant && $demande->etudiant->utilisateur) {
-            $message = "";
-            if ($newStatus === 'en_cours_traitement') {
-                $message = "Votre demande est en cours de traitement par la scolarité.";
-            } elseif ($newStatus === 'fin') {
-                $message = "Votre document est prêt. Vous pouvez le récupérer au niveau de la scolarité.";
-            } elseif ($newStatus === 'rejetee') {
-                $message = "Votre demande a été rejetée.";
-            }
-
+            $statusLabel = $request->statut === 'rejetee' ? 'rejetée' : ($request->statut === 'fin' ? 'terminée' : 'en cours');
+            $message = "Votre demande pour le document : {$demande->document->type_document} est désormais {$statusLabel}.";
             if ($request->remarque_admin) {
                 $message .= " Remarque : " . $request->remarque_admin;
             }
 
-            Notification::create([
-                'id_utilisateur' => $demande->etudiant->utilisateur->id,
-                'matricule_etudiant' => $demande->etudiant->matricule,
-                'message' => $message,
-                'lu' => false,
-            ]);
+            \App\Http\Controllers\NotificationController::storeForStudent(
+                $demande->etudiant->utilisateur->id,
+                "Mise à jour de votre demande",
+                $message,
+                "demande",
+                $demande->etudiant->matricule,
+                route('etudiant.demandes.index')
+            );
         }
 
         return redirect()->route('admin.dashboard')->with('success', 'Le statut de la demande a été mis à jour avec succès.');

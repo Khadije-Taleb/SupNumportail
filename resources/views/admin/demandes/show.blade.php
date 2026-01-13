@@ -1,91 +1,42 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails de la demande - SupNumPortail</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8f9fa; color: #1e293b; }
-        
-        /* Header Standard */
-        .header { background-color: white; border-bottom: 1px solid #e2e8f0; padding: 0 2rem; height: 64px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); margin-bottom: 2rem; }
-        .header-left { display: flex; align-items: center; gap: 3rem; }
-        .logo { display: flex; align-items: center; gap: 0; font-weight: 700; font-size: 1.25rem; color: #1e293b; text-decoration: none; }
-        .nav { display: flex; gap: 2rem; }
-        .nav-link { text-decoration: none; color: #64748b; font-size: 0.9375rem; font-weight: 500; transition: color 0.2s; height: 64px; display: flex; align-items: center; border-bottom: 2px solid transparent; }
-        .nav-link:hover { color: #1e293b; }
-        .nav-link.active { color: #2563eb; border-bottom-color: #2563eb; }
-        .header-right { display: flex; align-items: center; gap: 2rem; }
-        .user-menu { display: flex; align-items: center; gap: 0.5rem; color: #64748b; }
-        .user-icon { color: #4c1d95; display: flex; align-items: center; }
-        .logout-btn { color: #ef4444; font-weight: 600; font-size: 0.9375rem; text-decoration: none; background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; }
+@extends('layouts.admin')
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-        
-        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: #64748b; text-decoration: none; font-weight: 500; margin-bottom: 1.5rem; font-size: 0.9rem; transition: color 0.2s; }
-        .back-link:hover { color: #2563eb; }
+@section('title', 'Détails de la demande - SupNumPortail')
 
-        .page-header { margin-bottom: 2rem; }
-        .page-title { font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
-        .page-subtitle { color: #64748b; }
+@section('styles')
+<style>
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+    
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: #64748b; text-decoration: none; font-weight: 500; margin-bottom: 1.5rem; font-size: 0.9rem; transition: color 0.2s; }
+    .back-link:hover { color: #2563eb; }
 
-        .card { background: white; border-radius: 0.75rem; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 2rem; }
-        .card-header { border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-        .card-title { font-size: 1.1rem; font-weight: 600; color: #1e293b; display: flex; align-items: center; gap: 0.5rem; }
+    .page-header { margin-bottom: 2rem; }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
+    .page-subtitle { color: #64748b; }
 
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
-        .detail-item { margin-bottom: 1rem; }
-        .label { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
-        .value { font-size: 1rem; font-weight: 500; color: #0f172a; }
+    .card { background: white; border-radius: 0.75rem; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+    .card-header { border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .card-title { font-size: 1.1rem; font-weight: 600; color: #1e293b; display: flex; align-items: center; gap: 0.5rem; }
 
-        .status-badge { display: inline-block; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
-        .status-en_attente { background: #fef3c7; color: #92400e; }
-        .status-en_cours_traitement { background: #dbeafe; color: #1e40af; }
-        .status-fin { background: #dcfce7; color: #166534; }
-        .status-rejetee { background: #fee2e2; color: #991b1b; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .detail-item { margin-bottom: 1rem; }
+    .label { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+    .value { font-size: 1rem; font-weight: 500; color: #0f172a; }
 
-        .form-group { margin-bottom: 1.5rem; }
-        select, textarea { width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; font-family: inherit; font-size: 0.95rem; }
-        select:focus, textarea:focus { outline: none; border-color: #2563eb; ring: 3px rgba(37,99,235,0.1); }
-        .btn-primary { background: #2563eb; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
-        .btn-primary:hover { background: #1d4ed8; }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <a href="{{ route('admin.dashboard') }}" class="logo">
-                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
-            </a>
-            <nav class="nav">
-                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
-                <a href="{{ route('admin.document-types.index') }}" class="nav-link {{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}">Documents</a>
-                <a href="{{ route('admin.etudiants.import') }}" class="nav-link {{ request()->routeIs('admin.etudiants.import') ? 'active' : '' }}">Importation</a>
-                <a href="{{ route('admin.certificats.index') }}" class="nav-link {{ request()->routeIs('admin.certificats.*') ? 'active' : '' }}">Certificats</a>
-                <a href="{{ route('admin.demandes.index') }}" class="nav-link {{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}">Demandes</a>
-            </nav>
-        </div>
-        <div class="header-right">
-            <div class="user-menu">
-                <div class="user-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                </div>
-                <span>Admin</span>
-            </div>
-            
-            <form method="POST" action="{{ route('logout') }}" style="margin: 0; display: flex;">
-                @csrf
-                <button type="submit" class="logout-btn">
-                    Déconnexion
-                </button>
-            </form>
-        </div>
-    </header>
+    .status-badge { display: inline-block; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
+    .status-en_attente { background: #fef3c7; color: #92400e; }
+    .status-en_cours_traitement { background: #dbeafe; color: #1e40af; }
+    .status-fin { background: #dcfce7; color: #166534; }
+    .status-rejetee { background: #fee2e2; color: #991b1b; }
 
+    .form-group { margin-bottom: 1.5rem; }
+    select, textarea { width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; font-family: inherit; font-size: 0.95rem; }
+    select:focus, textarea:focus { outline: none; border-color: #2563eb; ring: 3px rgba(37,99,235,0.1); }
+    .btn-primary { background: #2563eb; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
+    .btn-primary:hover { background: #1d4ed8; }
+</style>
+@endsection
+
+@section('content')
     <div class="container">
         <a href="{{ route('admin.demandes.index') }}" class="back-link">
             <span>←</span> Retour aux demandes
@@ -181,5 +132,4 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+@endsection

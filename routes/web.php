@@ -51,6 +51,8 @@ Route::middleware(['auth', 'role:ETUDIANT'])->prefix('etudiant')->as('etudiant.'
 
     // Profil
     Route::get('/profil', [EtudiantController::class, 'profil'])->name('profil');
+    Route::get('/profil/password', [EtudiantController::class, 'editPassword'])->name('password.edit');
+    Route::put('/profil/password', [EtudiantController::class, 'updatePassword'])->name('password.update_custom');
 });
 
 // Routes Admin

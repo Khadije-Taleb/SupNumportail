@@ -1,422 +1,281 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Importation des Étudiants - SupNumPortail</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@extends('layouts.admin')
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #1e293b;
-        }
+@section('title', 'Importation des Étudiants')
 
-        /* Header Standard */
-        .header {
-            background-color: white;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 0 2rem;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
-        }
+@section('styles')
+<style>
+    /* Main Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0.5rem 0;
+    }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-        }
+    /* Page Header */
+    .page-header {
+        margin-bottom: 2rem;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: #1e293b;
-            text-decoration: none;
-        }
+    .page-header h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+    }
 
-        .nav {
-            display: flex;
-            gap: 2rem;
-        }
+    .page-description {
+        color: #64748b;
+        font-size: 1rem;
+    }
 
-        .nav-link {
-            text-decoration: none;
-            color: #64748b;
-            font-size: 0.9375rem;
-            font-weight: 500;
-            transition: color 0.2s;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            border-bottom: 2px solid transparent;
-        }
+    /* Instructions Box */
+    .instructions-box {
+        background-color: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 
-        .nav-link:hover {
-            color: #1e293b;
-        }
+    .instructions-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
 
-        .nav-link.active {
-            color: #2563eb;
-            border-bottom-color: #2563eb;
-        }
+    .info-icon {
+        width: 24px;
+        height: 24px;
+        background-color: #2563eb;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: bold;
+    }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
+    .instructions-title {
+        color: #2563eb;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #64748b;
-        }
+    .instructions-text {
+        color: #475569;
+        font-size: 0.9375rem;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
 
-        .user-icon {
-            color: #4c1d95;
-            display: flex;
-            align-items: center;
-        }
+    .required-fields {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
 
-        .logout-btn {
-            color: #ef4444;
-            font-weight: 600;
-            font-size: 0.9375rem;
-            text-decoration: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            font-family: inherit;
-        }
+    .field-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        background-color: #f8fafc;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        color: #475569;
+    }
 
-        /* Main Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2.5rem 2rem;
-        }
+    .field-icon {
+        font-size: 1rem;
+    }
 
-        /* Page Header */
-        .page-header {
-            margin-bottom: 2rem;
-        }
+    /* Upload Zone */
+    .upload-section {
+        background-color: white;
+        border-radius: 0.75rem;
+        padding: 3rem 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 
-        .page-header h1 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 0.5rem;
-        }
+    .upload-zone {
+        border: 2px dashed #cbd5e1;
+        border-radius: 0.75rem;
+        padding: 3rem 2rem;
+        text-align: center;
+        transition: all 0.3s;
+        cursor: pointer;
+        background-color: #f8fafc;
+    }
 
-        .page-description {
-            color: #64748b;
-            font-size: 1rem;
-        }
+    .upload-zone:hover {
+        border-color: #2563eb;
+        background-color: #eff6ff;
+    }
 
-        /* Instructions Box */
-        .instructions-box {
-            background-color: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
+    .upload-zone.dragover {
+        border-color: #2563eb;
+        background-color: #dbeafe;
+        transform: scale(1.02);
+    }
 
-        .instructions-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
+    .upload-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1.5rem;
+        background-color: #dbeafe;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+    }
 
-        .info-icon {
-            width: 24px;
-            height: 24px;
-            background-color: #2563eb;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-            font-weight: bold;
-        }
+    .upload-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+    }
 
-        .instructions-title {
-            color: #2563eb;
-            font-weight: 600;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    .upload-description {
+        color: #64748b;
+        font-size: 0.9375rem;
+        margin-bottom: 1.5rem;
+    }
 
-        .instructions-text {
-            color: #475569;
-            font-size: 0.9375rem;
-            margin-bottom: 1rem;
-            line-height: 1.5;
-        }
+    .upload-btn {
+        background-color: #2563eb;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 0.5rem;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
 
-        .required-fields {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-        }
+    .upload-btn:hover {
+        background-color: #1d4ed8;
+    }
 
-        .field-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            background-color: #f8fafc;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            color: #475569;
-        }
+    .file-input {
+        display: none;
+    }
 
-        .field-icon {
-            font-size: 1rem;
-        }
+    /* Status Alerts */
+    .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.9375rem;
+        font-weight: 500;
+    }
 
-        /* Upload Zone */
-        .upload-section {
-            background-color: white;
-            border-radius: 0.75rem;
-            padding: 3rem 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
+    .alert-success {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #6ee7b7;
+    }
 
-        .upload-zone {
-            border: 2px dashed #cbd5e1;
-            border-radius: 0.75rem;
-            padding: 3rem 2rem;
-            text-align: center;
-            transition: all 0.3s;
-            cursor: pointer;
-            background-color: #f8fafc;
-        }
+    .alert-error {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
 
-        .upload-zone:hover {
-            border-color: #2563eb;
-            background-color: #eff6ff;
-        }
+    /* Help Section */
+    .help-section {
+        background-color: white;
+        border-radius: 0.75rem;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
 
-        .upload-zone.dragover {
-            border-color: #2563eb;
-            background-color: #dbeafe;
-            transform: scale(1.02);
-        }
+    .help-section:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-        .upload-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 1.5rem;
-            background-color: #dbeafe;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
+    .help-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-        .upload-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 0.5rem;
-        }
+    .help-title {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #0f172a;
+    }
 
-        .upload-description {
-            color: #64748b;
-            font-size: 0.9375rem;
-            margin-bottom: 1.5rem;
-        }
+    .help-icon {
+        color: #2563eb;
+        font-size: 1.25rem;
+        transition: transform 0.3s;
+    }
 
-        .upload-btn {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 0.5rem;
-            font-size: 0.9375rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+    .help-section.expanded .help-icon {
+        transform: rotate(180deg);
+    }
 
-        .upload-btn:hover {
-            background-color: #1d4ed8;
-        }
+    .help-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
 
-        .file-input {
-            display: none;
-        }
+    .help-section.expanded .help-content {
+        max-height: 500px;
+        margin-top: 1rem;
+    }
 
-        /* Status Alerts */
-        .alert {
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.9375rem;
-            font-weight: 500;
-        }
+    .help-text {
+        color: #64748b;
+        font-size: 0.9375rem;
+        line-height: 1.6;
+    }
 
-        .alert-success {
-            background-color: #d1fae5;
-            color: #065f46;
-            border: 1px solid #6ee7b7;
-        }
+    /* Loading Animation */
+    .loading {
+        display: none;
+        margin-top: 1rem;
+    }
 
-        .alert-error {
-            background-color: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
+    .loading.active {
+        display: block;
+    }
 
-        /* Help Section */
-        .help-section {
-            background-color: white;
-            border-radius: 0.75rem;
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+    .loading-bar {
+        width: 100%;
+        height: 4px;
+        background-color: #e2e8f0;
+        border-radius: 2px;
+        overflow: hidden;
+    }
 
-        .help-section:hover {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    .loading-progress {
+        height: 100%;
+        background-color: #2563eb;
+        animation: loading 1.5s ease-in-out infinite;
+    }
 
-        .help-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    @keyframes loading {
+        0% { width: 0%; margin-left: 0%; }
+        50% { width: 50%; margin-left: 25%; }
+        100% { width: 0%; margin-left: 100%; }
+    }
+</style>
+@endsection
 
-        .help-title {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #0f172a;
-        }
-
-        .help-icon {
-            color: #2563eb;
-            font-size: 1.25rem;
-            transition: transform 0.3s;
-        }
-
-        .help-section.expanded .help-icon {
-            transform: rotate(180deg);
-        }
-
-        .help-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .help-section.expanded .help-content {
-            max-height: 500px;
-            margin-top: 1rem;
-        }
-
-        .help-text {
-            color: #64748b;
-            font-size: 0.9375rem;
-            line-height: 1.6;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: #94a3b8;
-            font-size: 0.875rem;
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: none;
-            margin-top: 1rem;
-        }
-
-        .loading.active {
-            display: block;
-        }
-
-        .loading-bar {
-            width: 100%;
-            height: 4px;
-            background-color: #e2e8f0;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .loading-progress {
-            height: 100%;
-            background-color: #2563eb;
-            animation: loading 1.5s ease-in-out infinite;
-        }
-
-        @keyframes loading {
-            0% { width: 0%; margin-left: 0%; }
-            50% { width: 50%; margin-left: 25%; }
-            100% { width: 0%; margin-left: 100%; }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <a href="{{ route('admin.dashboard') }}" class="logo">
-                <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
-            </a>
-            <nav class="nav">
-                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
-                <a href="{{ route('admin.document-types.index') }}" class="nav-link {{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}">Documents</a>
-                <a href="{{ route('admin.etudiants.import') }}" class="nav-link {{ request()->routeIs('admin.etudiants.import') ? 'active' : '' }}">Importation</a>
-                <a href="{{ route('admin.certificats.index') }}" class="nav-link {{ request()->routeIs('admin.certificats.*') ? 'active' : '' }}">Certificats</a>
-                <a href="{{ route('admin.demandes.index') }}" class="nav-link {{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}">Demandes</a>
-            </nav>
-        </div>
-        <div class="header-right">
-            <div class="user-menu">
-                <div class="user-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                </div>
-                <span>Admin</span>
-            </div>
-            
-            <form method="POST" action="{{ route('logout') }}" style="margin: 0; display: flex;">
-                @csrf
-                <button type="submit" class="logout-btn">
-                    Déconnexion
-                </button>
-            </form>
-        </div>
-    </header>
-
-    <!-- Main Container -->
+@section('content')
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">
@@ -509,12 +368,9 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <!-- Footer -->
-    <div class="footer">
-        © {{ date('Y') }} SupNumPortail - Administration Centralisée. Tous droits réservés.
-    </div>
-
+@section('scripts')
     <script>
         const uploadZone = document.getElementById('uploadZone');
         const fileInput = document.getElementById('fileInput');
@@ -558,5 +414,4 @@
             helpSection.classList.toggle('expanded');
         });
     </script>
-</body>
-</html>
+@endsection

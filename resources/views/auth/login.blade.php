@@ -37,6 +37,16 @@
             font-weight: 600;
             color: #1a1a1a;
             margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header h1 img {
+            height: 45px;
+            width: auto;
+            background: transparent;
+            display: block;
         }
 
         .header p {
@@ -243,7 +253,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 style="font-size: 1.5rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0;">
+            <h1>
+                <img src="{{ asset('images/logo.png') }}" alt="SupNum logo">
                 <span style="color: #16a34a;">SupNum</span><span style="color: #1d4ed8;">Portail</span>
             </h1>
             <p>Portail unifié Étudiants & Administration</p>
