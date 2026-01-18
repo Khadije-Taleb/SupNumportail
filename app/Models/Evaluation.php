@@ -10,7 +10,7 @@ class Evaluation extends Model
 
     protected $primaryKey = 'id';
 
-    public $timestamps = false; // assuming this table may not have timestamps
+    public $timestamps = false;
 
     protected $fillable = [
         'nom_matiere',

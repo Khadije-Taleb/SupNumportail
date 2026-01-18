@@ -86,11 +86,11 @@
                         <div class="form-group">
                             <label class="form-label">Année</label>
                             <select name="annee" class="form-select" required>
-                                <option value="L1">L1</option>
-                                <option value="L2">L2</option>
-                                <option value="L3">L3</option>
-                                <option value="M1">M1</option>
-                                <option value="M2">M2</option>
+                                <option value="L1" {{ (old('annee', $etudiant->annee) == 'L1') ? 'selected' : '' }}>L1</option>
+                                <option value="L2" {{ (old('annee', $etudiant->annee) == 'L2') ? 'selected' : '' }}>L2</option>
+                                <option value="L3" {{ (old('annee', $etudiant->annee) == 'L3') ? 'selected' : '' }}>L3</option>
+                                <option value="M1" {{ (old('annee', $etudiant->annee) == 'M1') ? 'selected' : '' }}>M1</option>
+                                <option value="M2" {{ (old('annee', $etudiant->annee) == 'M2') ? 'selected' : '' }}>M2</option>
                             </select>
                         </div>
                     </div>
@@ -100,11 +100,17 @@
                             <svg width="40" height="40" fill="#2196f3" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
                             <p class="upload-text">Cliquez pour ajouter le certificat</p>
                             <p class="upload-hint">PDF, JPG, PNG (Max. 2MB)</p>
-                            <input type="file" id="fichier" name="fichier" style="display:none" accept=".pdf,.jpg,.jpeg,.png" required>
+                        <div id="file-preview-container" style="display:none; margin-top: 15px; text-align: center;">
+                            <img id="image-preview" src="#" alt="Aperçu" style="max-width: 100%; max-height: 150px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 10px;">
+                            <div id="pdf-preview" style="display:none; padding: 10px; background: #f1f5f9; border-radius: 8px; font-size: 13px; color: #475569;">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 5px;"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                                <span id="file-name">document.pdf</span>
+                            </div>
                         </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Envoyer le certificat</button>
-                        </div>
+                        <input type="file" id="fichier" name="fichier" style="display:none" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile(this)">
+                    </div>
+                    <div class="form-actions" style="margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary">Envoyer le certificat</button>
                     </div>
                 </div>
             </form>
@@ -120,7 +126,7 @@
                             <th>Matière</th>
                             <th>Type</th>
                             <th>Statut</th>
-                            <th>Action</th>
+                            <th>Remarque Admin</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,11 +137,11 @@
                                 <td>{{ str_replace('_', ' ', $cert->evaluation->type_evaluation ?? 'N/A') }}</td>
                                 <td>
                                     <span class="status-badge {{ $cert->statut }}">
-                                        {{ $cert->statut }}
+                                        {{ str_replace('_', ' ', $cert->statut) }}
                                     </span>
                                 </td>
-                                <td>
-                                    <a href="{{ Storage::url($cert->photo_certificat) }}" target="_blank" style="color:#2196f3; text-decoration:none;">Voir</a>
+                                <td style="color: #666; font-style: italic;">
+                                    {{ $cert->remarque_admin ?? 'Aucune remarque' }}
                                 </td>
                             </tr>
                         @endforeach
@@ -144,4 +150,38 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function previewFile(input) {
+            const container = document.getElementById('file-preview-container');
+            const imgPreview = document.getElementById('image-preview');
+            const pdfPreview = document.getElementById('pdf-preview');
+            const fileName = document.getElementById('file-name');
+            const uploadText = document.querySelector('.upload-text');
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+
+                container.style.display = 'block';
+                uploadText.textContent = 'Fichier sélectionné : ' + file.name;
+
+                if (file.type.startsWith('image/')) {
+                    reader.onload = function(e) {
+                        imgPreview.src = e.target.result;
+                        imgPreview.style.display = 'block';
+                        pdfPreview.style.display = 'none';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    imgPreview.style.display = 'none';
+                    pdfPreview.style.display = 'block';
+                    fileName.textContent = file.name;
+                }
+            } else {
+                container.style.display = 'none';
+                uploadText.textContent = 'Cliquez pour ajouter le certificat';
+            }
+        }
+    </script>
 @endsection

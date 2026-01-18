@@ -80,6 +80,16 @@ class CertificatMedicalController extends Controller
 
     public function adminIndex(Request $request)
     {
+        return $this->getAdminView($request);
+    }
+
+    public function adminShow(Request $request, CertificatMedical $certificat)
+    {
+        return $this->getAdminView($request, $certificat);
+    }
+
+    private function getAdminView(Request $request, $selectedCertificat = null)
+    {
         $query = CertificatMedical::with(['etudiant.utilisateur', 'evaluation']);
 
         // Filter by status
@@ -103,20 +113,15 @@ class CertificatMedicalController extends Controller
             });
         }
 
-        $certificats = $query->latest()->paginate(10);
+        $certificats = $query->latest()->paginate(10)->withQueryString();
 
         // Get distinct matieres and types for filter dropdowns
         $matieres = \App\Models\Evaluation::distinct()->pluck('nom_matiere')->sort();
         $typesEvaluation = \App\Models\Evaluation::distinct()->pluck('type_evaluation')->sort();
 
-        return view('admin.certificats.index', compact('certificats', 'matieres', 'typesEvaluation'));
-    }
+        $certificat = $selectedCertificat;
 
-    public function adminShow(CertificatMedical $certificat)
-    {
-        $certificat->load(['etudiant.utilisateur', 'evaluation']);
-        $certificats = CertificatMedical::with(['etudiant.utilisateur', 'evaluation'])->latest()->paginate(10);
-        return view('admin.certificats.index', compact('certificat', 'certificats'));
+        return view('admin.certificats.index', compact('certificats', 'matieres', 'typesEvaluation', 'certificat'));
     }
 
     public function adminViewFile(CertificatMedical $certificat)
@@ -149,7 +154,7 @@ class CertificatMedicalController extends Controller
         $certificat->update([
             'statut' => $request->statut,
             'remarque_admin' => $request->remarque_admin,
-            'admin_id' => $admin->id_admin, // Should be authenticated admin
+            'admin_id' => $admin->id, // Corrected from id_admin to id
         ]);
 
         // Notification Logic

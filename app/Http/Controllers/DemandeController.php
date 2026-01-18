@@ -96,7 +96,7 @@ class DemandeController extends Controller
         $demande->update([
             'statut' => $request->statut,
             'remarque_admin' => $request->remarque_admin,
-            'id_admin' => $admin->id_admin,
+            'admin_id' => $admin->id,
         ]);
 
         // Notification Logic

@@ -136,7 +136,7 @@
         border-radius: 0.75rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         padding: 1.5rem;
-        height: fit-content;
+        height: min-content;
         position: sticky;
         top: 2rem;
     }
@@ -303,7 +303,7 @@
                             $selectedId = $certificat->id ?? null;
                         @endphp
                         @forelse($certificats as $cert)
-                            <tr onclick="window.location='{{ route('admin.certificats.show', $cert->id) }}'" class="{{ $selectedId == $cert->id ? 'active' : '' }}">
+                            <tr onclick="window.location='{{ route('admin.certificats.show', array_merge(['certificat' => $cert->id], request()->query())) }}'" class="{{ $selectedId == $cert->id ? 'active' : '' }}">
                                 <td>
                                     <div class="student-name">{{ $cert->etudiant->prenom ?? '' }} {{ $cert->etudiant->nom ?? '' }}</div>
                                     <div class="student-id">{{ $cert->etudiant->matricule ?? '' }}</div>
@@ -315,11 +315,11 @@
                                 </td>
                                 <td>
                                     <span class="status-badge status-{{ $cert->statut }}">
-                                        {{ $cert->statut }}
+                                        {{ str_replace('_', ' ', $cert->statut) }}
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.certificats.show', $cert->id) }}" class="action-link">Voir</a>
+                                    <a href="{{ route('admin.certificats.show', array_merge(['certificat' => $cert->id], request()->query())) }}" class="action-link">Voir</a>
                                 </td>
                             </tr>
                         @empty
@@ -339,45 +339,38 @@
         <div class="right-panel">
             @if(isset($certificat))
                 <div class="panel-header">
-                    <h3 class="panel-title">Détails du Certificat</h3>
+                    <h3 class="panel-title">Traitement du Certificat</h3>
                 </div>
-
+                
                 <div class="detail-group">
                     <div class="detail-label">Étudiant</div>
                     <div class="detail-value">{{ $certificat->etudiant->prenom ?? '' }} {{ $certificat->etudiant->nom ?? '' }}</div>
                 </div>
 
                 <div class="detail-group">
-                    <div class="detail-label">Matricule</div>
-                    <div class="detail-value">{{ $certificat->etudiant->matricule ?? 'N/A' }}</div>
+                    <div class="detail-label">Matière / Type</div>
+                    <div class="detail-value" style="font-size: 1.125rem; color: #2563eb; font-weight: 700;">
+                        {{ $certificat->evaluation->nom_matiere ?? 'N/A' }} 
+                        <span style="font-size: 0.875rem; color: #64748b; font-weight: normal;">({{ str_replace('_', ' ', ucfirst($certificat->evaluation->type_evaluation ?? 'N/A')) }})</span>
+                    </div>
                 </div>
 
                 <div class="detail-group">
-                    <div class="detail-label">Date d'absence</div>
-                    <div class="detail-value">{{ $certificat->date_absence ? $certificat->date_absence->format('d F Y') : 'N/A' }}</div>
+                    <div class="detail-label">Matricule / Date d'absence</div>
+                    <div class="detail-value">{{ $certificat->etudiant->matricule ?? 'N/A' }} / {{ $certificat->date_absence ? $certificat->date_absence->format('d M Y') : 'N/A' }}</div>
                 </div>
 
-                <div class="detail-group">
-                    <div class="detail-label">Matière</div>
-                    <div class="detail-value">{{ $certificat->evaluation->nom_matiere ?? 'N/A' }}</div>
-                </div>
-
-                <div class="detail-group">
-                    <div class="detail-label">Type d'évaluation</div>
-                    <div class="detail-value">{{ str_replace('_', ' ', ucfirst($certificat->evaluation->type_evaluation ?? 'N/A')) }}</div>
-                </div>
-
-                <div class="detail-label">APERÇU DU DOCUMENT</div>
-                <div class="document-preview">
+                <div class="detail-label">APERÇU DU JUSTIFICATIF</div>
+                <div class="document-preview" style="min-height: 200px; max-height: 350px;">
                     @php
                         $extension = pathinfo($certificat->photo_certificat, PATHINFO_EXTENSION);
                         $isPdf = strtolower($extension) === 'pdf';
                     @endphp
 
                     @if($isPdf)
-                        <iframe src="{{ route('admin.certificats.viewFile', $certificat) }}"></iframe>
+                        <iframe src="{{ route('admin.certificats.viewFile', $certificat) }}" style="height: 300px;"></iframe>
                     @else
-                        <img src="{{ route('admin.certificats.viewFile', $certificat) }}" alt="Certificat">
+                        <img src="{{ route('admin.certificats.viewFile', $certificat) }}" alt="Certificat" style="max-height: 300px;">
                     @endif
                 </div>
 
