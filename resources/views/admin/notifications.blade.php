@@ -64,13 +64,7 @@
         padding-left: 20px;
     }
 
-    .notification-checkbox {
-        width: 20px;
-        height: 20px;
-        margin-top: 2px;
-        cursor: pointer;
-        accent-color: #4caf50;
-    }
+
 
     .notification-content {
         flex: 1;
@@ -253,8 +247,7 @@
                 <div class="notification-item {{ $notification->is_read ? 'read' : 'unread' }}" 
                      data-id="{{ $notification->id }}"
                      data-link="{{ $notification->link }}">
-                    <input type="checkbox" class="notification-checkbox" 
-                           data-id="{{ $notification->id }}">
+
                     <div class="notification-content">
                         <div class="notification-header">
                             <span class="notification-title">
@@ -312,7 +305,6 @@
     // Mark notification as read when clicked
     document.querySelectorAll('.notification-item').forEach(item => {
         item.addEventListener('click', function(e) {
-            if (e.target.type !== 'checkbox') {
                 const notificationId = this.dataset.id;
                 const link = this.dataset.link;
                 
@@ -321,7 +313,6 @@
                 } else if (link) {
                     window.location.href = link;
                 }
-            }
         });
     });
 

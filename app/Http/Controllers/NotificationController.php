@@ -21,6 +21,14 @@ class NotificationController extends Controller
             ->where('role', $role)
             ->latest('created_at')
             ->paginate(10);
+
+        // Si c'est un étudiant, on marque toutes ses notifications comme lues
+        if ($role === 'etudiant') {
+            Notification::where('id_utilisateur', $user->id)
+                ->where('role', $role)
+                ->where('is_read', false)
+                ->update(['is_read' => true]);
+        }
         
         $view = $role === 'admin' ? 'admin.notifications' : 'etudiant.notifications';
         
