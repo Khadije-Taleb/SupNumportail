@@ -95,8 +95,6 @@ class CertificatMedicalController extends Controller
         // Filter by status
         if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
-        } else {
-            $query->where('statut', 'EN_ATTENTE');
         }
 
         // Filter by matiere (via evaluation table)
